@@ -13,5 +13,36 @@ describe("SheLeads", function () {
     return { sheLeads, owner, account1, account2 }
   }
 
-  describe("Basic Test", () => {})
+  describe("Basic Test", () => {
+    it("Add Professional Profile", async () => {
+      const { sheLeads } = await loadFixture(deploySheLeads)
+
+      let content = "123-1323DSR"
+
+      await sheLeads.addProfessionalProfile(content)
+
+      const pp = await sheLeads.getProfessionalProfile()
+
+      assert.equal(pp.content, content)
+    })
+    it("Add Recomendation", async () => {
+      const { sheLeads } = await loadFixture(deploySheLeads)
+
+      let content = "123-1323DSR"
+
+      await sheLeads.addProfessionalProfile(content)
+
+      const pp = await sheLeads.getProfessionalProfile()
+
+      assert.equal(pp.content, content)
+
+      content = "885553366"
+
+      await sheLeads.addRecomendation(pp.id, content)
+
+      const rec = await sheLeads.getRecomendation(pp.id)
+
+      assert.equal(rec.content, content)
+    })
+  })
 })
