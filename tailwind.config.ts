@@ -72,6 +72,10 @@ const config = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      fontFamily: {
+        chicle: ["var(--font-chicle)"],
+        "work-sans": ["var(--font-work-sans)"],
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],
