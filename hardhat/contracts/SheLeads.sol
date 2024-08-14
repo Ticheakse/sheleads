@@ -15,12 +15,20 @@ contract SheLeads {
   /// @dev Recommendation id counter
   Counters.Counter recommendationId;
 
+  /// @dev Action Plan id counter
+  Counters.Counter actionPlanId;
+
   struct ProfessionalProfile {
     uint256 id;
     string content;
   }
 
   struct Recommendation {
+    uint256 id;
+    string content;
+  }
+
+  struct ActionPlan {
     uint256 id;
     string content;
   }
@@ -37,9 +45,13 @@ contract SheLeads {
   /// @dev mapping professionalProfileId to Recommendation
   mapping(uint256 => Recommendation) recommendation;
 
+  /// @dev mapping recomendationId to ActionPlan
+  mapping(uint256 => ActionPlan) actionPlan;
+
   /// @dev Events
   event AddProfessionalProfile(address indexed userAddress);
-  event AddRecomendation(address indexed userAddress);
+  event AddRecommendation(address indexed userAddress);
+  event AddActionPlan(address indexed userAddress);
 
   constructor() {}
 
@@ -65,7 +77,7 @@ contract SheLeads {
     return professionalProfile[ppID];
   }
 
-  function addRecomendation(
+  function addRecommendation(
     uint256 _professionalProfileId,
     string memory _content
   ) public {
@@ -78,12 +90,31 @@ contract SheLeads {
 
     professionalProfileId.increment();
 
-    emit AddRecomendation(msg.sender);
+    emit AddRecommendation(msg.sender);
   }
 
-  function getRecomendation(
+  function getRecommendation(
     uint _professionalProfile
   ) public view returns (Recommendation memory) {
     return recommendation[_professionalProfile];
+  }
+
+  function addActionPlan(
+    uint256 _recommendationId,
+    string memory _content
+  ) public {
+    uint256 id = actionPlanId.current();
+
+    actionPlan[_recommendationId] = ActionPlan({id: id, content: _content});
+
+    actionPlanId.increment();
+
+    emit AddActionPlan(msg.sender);
+  }
+
+  function getActionPlan(
+    uint256 _recommendationId
+  ) public view returns (ActionPlan memory) {
+    return actionPlan[_recommendationId];
   }
 }

@@ -25,6 +25,7 @@ describe("SheLeads", function () {
 
       assert.equal(pp.content, content)
     })
+    
     it("Add Recomendation", async () => {
       const { sheLeads } = await loadFixture(deploySheLeads)
 
@@ -38,11 +39,37 @@ describe("SheLeads", function () {
 
       content = "885553366"
 
-      await sheLeads.addRecomendation(pp.id, content)
+      await sheLeads.addRecommendation(pp.id, content)
 
-      const rec = await sheLeads.getRecomendation(pp.id)
+      const rec = await sheLeads.getRecommendation(pp.id)
 
       assert.equal(rec.content, content)
+    })
+
+    it("Add ActionPlan", async () => {
+      const { sheLeads } = await loadFixture(deploySheLeads)
+
+      let content = "123-1323DSR"
+
+      await sheLeads.addProfessionalProfile(content)
+
+      const pp = await sheLeads.getProfessionalProfile()
+
+      assert.equal(pp.content, content)
+
+      content = "885553366"
+
+      await sheLeads.addRecommendation(pp.id, content)
+
+      const rec = await sheLeads.getRecommendation(pp.id)
+
+      content = "885553DSF366"
+
+      await sheLeads.addActionPlan(rec.id, content)
+
+      const ap = await sheLeads.getActionPlan(rec.id)
+
+      assert.equal(ap.content, content)
     })
   })
 })
