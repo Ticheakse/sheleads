@@ -24,6 +24,13 @@ import type {
 } from "./common";
 
 export declare namespace SheLeads {
+  export type ActionPlanStruct = { id: BigNumberish; content: string };
+
+  export type ActionPlanStructOutput = [id: bigint, content: string] & {
+    id: bigint;
+    content: string;
+  };
+
   export type ProfessionalProfileStruct = { id: BigNumberish; content: string };
 
   export type ProfessionalProfileStructOutput = [
@@ -42,39 +49,60 @@ export declare namespace SheLeads {
 export interface SheLeadsInterface extends Interface {
   getFunction(
     nameOrSignature:
+      | "addActionPlan"
       | "addProfessionalProfile"
-      | "addRecomendation"
+      | "addRecommendation"
+      | "getActionPlan"
       | "getProfessionalProfile"
-      | "getRecomendation"
+      | "getRecommendation"
   ): FunctionFragment;
 
   getEvent(
-    nameOrSignatureOrTopic: "AddProfessionalProfile" | "AddRecomendation"
+    nameOrSignatureOrTopic:
+      | "AddActionPlan"
+      | "AddProfessionalProfile"
+      | "AddRecommendation"
   ): EventFragment;
 
+  encodeFunctionData(
+    functionFragment: "addActionPlan",
+    values: [BigNumberish, string]
+  ): string;
   encodeFunctionData(
     functionFragment: "addProfessionalProfile",
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "addRecomendation",
+    functionFragment: "addRecommendation",
     values: [BigNumberish, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getActionPlan",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getProfessionalProfile",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "getRecomendation",
+    functionFragment: "getRecommendation",
     values: [BigNumberish]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "addActionPlan",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "addProfessionalProfile",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "addRecomendation",
+    functionFragment: "addRecommendation",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getActionPlan",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -82,9 +110,21 @@ export interface SheLeadsInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getRecomendation",
+    functionFragment: "getRecommendation",
     data: BytesLike
   ): Result;
+}
+
+export namespace AddActionPlanEvent {
+  export type InputTuple = [userAddress: AddressLike];
+  export type OutputTuple = [userAddress: string];
+  export interface OutputObject {
+    userAddress: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
 
 export namespace AddProfessionalProfileEvent {
@@ -99,7 +139,7 @@ export namespace AddProfessionalProfileEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export namespace AddRecomendationEvent {
+export namespace AddRecommendationEvent {
   export type InputTuple = [userAddress: AddressLike];
   export type OutputTuple = [userAddress: string];
   export interface OutputObject {
@@ -154,16 +194,28 @@ export interface SheLeads extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
+  addActionPlan: TypedContractMethod<
+    [_recommendationId: BigNumberish, _content: string],
+    [void],
+    "nonpayable"
+  >;
+
   addProfessionalProfile: TypedContractMethod<
     [_content: string],
     [void],
     "nonpayable"
   >;
 
-  addRecomendation: TypedContractMethod<
+  addRecommendation: TypedContractMethod<
     [_professionalProfileId: BigNumberish, _content: string],
     [void],
     "nonpayable"
+  >;
+
+  getActionPlan: TypedContractMethod<
+    [_recommendationId: BigNumberish],
+    [SheLeads.ActionPlanStructOutput],
+    "view"
   >;
 
   getProfessionalProfile: TypedContractMethod<
@@ -172,7 +224,7 @@ export interface SheLeads extends BaseContract {
     "view"
   >;
 
-  getRecomendation: TypedContractMethod<
+  getRecommendation: TypedContractMethod<
     [_professionalProfile: BigNumberish],
     [SheLeads.RecommendationStructOutput],
     "view"
@@ -183,14 +235,28 @@ export interface SheLeads extends BaseContract {
   ): T;
 
   getFunction(
+    nameOrSignature: "addActionPlan"
+  ): TypedContractMethod<
+    [_recommendationId: BigNumberish, _content: string],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
     nameOrSignature: "addProfessionalProfile"
   ): TypedContractMethod<[_content: string], [void], "nonpayable">;
   getFunction(
-    nameOrSignature: "addRecomendation"
+    nameOrSignature: "addRecommendation"
   ): TypedContractMethod<
     [_professionalProfileId: BigNumberish, _content: string],
     [void],
     "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "getActionPlan"
+  ): TypedContractMethod<
+    [_recommendationId: BigNumberish],
+    [SheLeads.ActionPlanStructOutput],
+    "view"
   >;
   getFunction(
     nameOrSignature: "getProfessionalProfile"
@@ -200,13 +266,20 @@ export interface SheLeads extends BaseContract {
     "view"
   >;
   getFunction(
-    nameOrSignature: "getRecomendation"
+    nameOrSignature: "getRecommendation"
   ): TypedContractMethod<
     [_professionalProfile: BigNumberish],
     [SheLeads.RecommendationStructOutput],
     "view"
   >;
 
+  getEvent(
+    key: "AddActionPlan"
+  ): TypedContractEvent<
+    AddActionPlanEvent.InputTuple,
+    AddActionPlanEvent.OutputTuple,
+    AddActionPlanEvent.OutputObject
+  >;
   getEvent(
     key: "AddProfessionalProfile"
   ): TypedContractEvent<
@@ -215,14 +288,25 @@ export interface SheLeads extends BaseContract {
     AddProfessionalProfileEvent.OutputObject
   >;
   getEvent(
-    key: "AddRecomendation"
+    key: "AddRecommendation"
   ): TypedContractEvent<
-    AddRecomendationEvent.InputTuple,
-    AddRecomendationEvent.OutputTuple,
-    AddRecomendationEvent.OutputObject
+    AddRecommendationEvent.InputTuple,
+    AddRecommendationEvent.OutputTuple,
+    AddRecommendationEvent.OutputObject
   >;
 
   filters: {
+    "AddActionPlan(address)": TypedContractEvent<
+      AddActionPlanEvent.InputTuple,
+      AddActionPlanEvent.OutputTuple,
+      AddActionPlanEvent.OutputObject
+    >;
+    AddActionPlan: TypedContractEvent<
+      AddActionPlanEvent.InputTuple,
+      AddActionPlanEvent.OutputTuple,
+      AddActionPlanEvent.OutputObject
+    >;
+
     "AddProfessionalProfile(address)": TypedContractEvent<
       AddProfessionalProfileEvent.InputTuple,
       AddProfessionalProfileEvent.OutputTuple,
@@ -234,15 +318,15 @@ export interface SheLeads extends BaseContract {
       AddProfessionalProfileEvent.OutputObject
     >;
 
-    "AddRecomendation(address)": TypedContractEvent<
-      AddRecomendationEvent.InputTuple,
-      AddRecomendationEvent.OutputTuple,
-      AddRecomendationEvent.OutputObject
+    "AddRecommendation(address)": TypedContractEvent<
+      AddRecommendationEvent.InputTuple,
+      AddRecommendationEvent.OutputTuple,
+      AddRecommendationEvent.OutputObject
     >;
-    AddRecomendation: TypedContractEvent<
-      AddRecomendationEvent.InputTuple,
-      AddRecomendationEvent.OutputTuple,
-      AddRecomendationEvent.OutputObject
+    AddRecommendation: TypedContractEvent<
+      AddRecommendationEvent.InputTuple,
+      AddRecommendationEvent.OutputTuple,
+      AddRecommendationEvent.OutputObject
     >;
   };
 }
