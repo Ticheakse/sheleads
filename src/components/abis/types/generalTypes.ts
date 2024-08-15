@@ -5,3 +5,5 @@ declare global {
     ethereum: any
   }
 }
+
+export type EncryptDataProps = { iv: string; encryptedData: string }

@@ -6,3 +6,5 @@ export const CONTRACT_ADDRESSES: { [chainId: number]: string } = {
   [shibariumTestnet.id]: "",
   [shibarium.id]: "",
 }
+
+export const algorithm = "aes-256-cbc"

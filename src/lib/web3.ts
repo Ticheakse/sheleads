@@ -1,5 +1,8 @@
 import { Interface, InterfaceAbi, ethers } from "ethers"
 import lighthouse from "@lighthouse-web3/sdk"
+import { decrypt, encryptData, listCID } from "./utils"
+
+const apiKey = process.env.LIGHTHOUSE_API_KEY as string
 
 export const getSignedContract = async (
   address: string,
@@ -12,19 +15,19 @@ export const getSignedContract = async (
   return new ethers.Contract(contractAddress, ABI, signer)
 }
 
-export const getBaseURL = (cid: string) =>
-  `https://gateway.lighthouse.storage/ipfs/${cid}`
+export const uploadToIPFS = async (
+  content: any
+): Promise<{
+  data: any
+}> => {
+  const { iv, encryptedData } = encryptData(content)
 
-export const signAuthMessage = async (address: string) => {
-  const provider = new ethers.BrowserProvider(window.ethereum)
-  const signer = await provider.getSigner(address)
+  const dataToStore = JSON.stringify({ iv, encryptedData })
 
-  const messageRequested = (await lighthouse.getAuthMessage(address)).data
-    .message
+  return await lighthouse.uploadText(dataToStore, apiKey)
+}
 
-  if (!messageRequested) return
-
-  const signedMessage = await signer.signMessage(messageRequested)
-
-  return signedMessage
+export const decryptCID = async (cid: string) => {
+  const encryptedData = await listCID(cid)
+  return decrypt(encryptedData)
 }

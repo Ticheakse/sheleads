@@ -1,10 +1,12 @@
 import {
+  Dispatch,
   ReactNode,
+  SetStateAction,
   createContext,
   useContext,
-  useEffect,
   useState,
 } from "react"
+
 import { SheLeads } from "@/components/abis/types/SheLeads"
 import SheLeadsAbi from "@/components/abis/SheLeads.json"
 import useContract from "@/hooks/useContract"
@@ -19,7 +21,7 @@ type SheLeadsProviderProps = {
 
 type SheLeadsContextType = {
   contract: ethers.Contract | null
-  addProfessionalProfile: (content: string) => Promise<void>
+  addProfessionalProfile: (contentId: string) => Promise<void>
   getProfessionalProfile: () => Promise<
     SheLeads.ProfessionalProfileStruct | undefined
   >
@@ -34,6 +36,8 @@ type SheLeadsContextType = {
   getActionPlan: (
     recommendationId: number
   ) => Promise<SheLeads.ActionPlanStruct | undefined>
+  responsesCGPT: JSON[]
+  setResponsesCGPT: Dispatch<SetStateAction<JSON[]>>
 }
 
 export const SheLeadsContext = createContext<SheLeadsContextType | null>(null)
@@ -41,28 +45,12 @@ export const SheLeadsContext = createContext<SheLeadsContextType | null>(null)
 const SheLeadsProvider = ({ children }: SheLeadsProviderProps) => {
   const router = useRouter()
   const chainId = useChainId()
+  const [responsesCGPT, setResponsesCGPT] = useState<JSON[]>([])
 
-  const { contract, isConnected } = useContract({
+  const { contract } = useContract({
     contractAddress: CONTRACT_ADDRESSES[chainId],
     ABI: SheLeadsAbi.abi,
   })
-
-  // useEffect(() => {
-  //   const asyncFunc = async () => {
-  //     if (isConnected && contract) {
-  //       const userI = await contract.getMyUserInfo()
-
-  //       if (!userI.name) router.push("/register")
-  //       else {
-  //         setUserInfo(userI)
-  //       }
-  //     } else {
-  //       // router.push("/")
-  //     }
-  //   }
-
-  //   asyncFunc()
-  // }, [isConnected, contract])
 
   const addProfessionalProfile = async (content: string): Promise<void> => {
     if (!contract) return
@@ -125,6 +113,8 @@ const SheLeadsProvider = ({ children }: SheLeadsProviderProps) => {
         getRecomendation,
         addActionPlan,
         getActionPlan,
+        responsesCGPT,
+        setResponsesCGPT,
       }}
     >
       {children}
