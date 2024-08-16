@@ -38,3 +38,31 @@ export const listCID = async (cid: string) => {
   const jsonContent = await fetch(`${getBaseURL(cid)}`)
   return await jsonContent.json()
 }
+
+export const upload = async (data: any): Promise<string> => {
+  const response = await fetch("/api/ipfs", {
+    method: "post",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: data,
+  })
+
+  const contentID = await response.json()
+  if (contentID.cid === "") return ""
+
+  return contentID.cid
+}
+
+export const cleanCGPTResponse = (text: string) => {
+  text = text.replaceAll("```json", "")
+  text = text.replaceAll("```", "")
+
+  return JSON.parse(text)
+}
+
+export const viewIPFSContent = async (cid: string) => {
+  const contenido = await fetch(`/api/ipfs?cid=${cid}`)
+  const res = await contenido.json()
+  return res.resource
+}

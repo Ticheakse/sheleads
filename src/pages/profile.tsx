@@ -1,3 +1,5 @@
+import { useRouter } from "next/router"
+import { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useFieldArray, useForm } from "react-hook-form"
 import { z } from "zod"
@@ -13,10 +15,9 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-
-import { useRouter } from "next/router"
-import { useState } from "react"
 import { ReloadIcon } from "@radix-ui/react-icons"
+import { upload } from "@/lib/utils"
+import { professionalProfileSoftwareEngineer } from "@/components/data/professionalProfile"
 
 const formSchema = z.object({
   workExperience: z.array(
@@ -98,33 +99,7 @@ const Profile = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      workExperience: [
-        {
-          jobTitle: "asd",
-          companyName: "as",
-          duration: "2 years",
-          mainResponsabilities: "asd",
-          specificSkills: "asd",
-        },
-      ],
-      educationCertification: {
-        highestLevelOfEducation: "asd",
-        fieldOfStudy: "asd",
-        certifications: "asd",
-      },
-      personalCompetences: {
-        strengths: "asd",
-        weaknesses: "asd",
-      },
-      goalsAndInspirations: {
-        WhatWouldYouLikeToDo: "asd",
-        shortTermGoals: "asd",
-        longTermGoals: "asd",
-      },
-      personalInterests: {
-        areasOfPersonalInterest: "asd",
-        timeAvailability: "asd",
-      },
+      ...professionalProfileSoftwareEngineer,
     },
   })
 
@@ -136,19 +111,11 @@ const Profile = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true)
 
-    const response = await fetch("/api/ipfs", {
-      method: "post",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
-    })
+    const cid = await upload(JSON.stringify(values))
 
-    const contentID = await response.json()
-    console.log("contentID :>> ", contentID.cid)
-    if (contentID.cid === "") return
+    if (cid === "") return
 
-    await addProfessionalProfile(contentID.cid)
+    await addProfessionalProfile(cid)
 
     setIsLoading(false)
     router.push("/recommendations")
@@ -195,7 +162,7 @@ const Profile = () => {
                   <FormItem>
                     <FormLabel>duration</FormLabel>
                     <FormControl>
-                      <Input type="number" {...field} />
+                      <Input {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
