@@ -55,3 +55,38 @@ export const professionalProfileSoftwareEngineer = {
       "Available for full-time opportunities with flexibility for remote work.",
   },
 }
+
+export const professionalProfileRecommendations = {
+  recommendations: [
+    {
+      isApproved: false,
+      title: "Expand Your AI and Machine Learning Expertise",
+      description:
+        "Given your background and interest in AI, consider taking advanced courses in machine learning and AI through platforms like Coursera, edX, or Udacity. Look for specialized certifications in these areas to enhance your qualifications and practical knowledge.",
+    },
+    {
+      isApproved: false,
+      title: "Engage with AI and Blockchain Communities",
+      description:
+        "Join professional groups and communities such as AI-focused LinkedIn groups, AI & Blockchain forums, and participate in hackathons or coding challenges. These platforms can provide valuable networking opportunities and keep you updated with the latest trends.",
+    },
+    {
+      isApproved: false,
+      title: "Attend Tech Conferences and Workshops",
+      description:
+        "Attend notable tech conferences like the International Conference on Learning Representations (ICLR), NeurIPS, or blockchain summits. These events offer networking opportunities, exposure to industry leaders, and insights into cutting-edge technologies.",
+    },
+    {
+      isApproved: false,
+      title: "Pursue CTO Mentorship Programs",
+      description:
+        "Seek out mentorship programs or connect with existing CTOs through networking events or platforms such as LinkedIn. Gaining insights from current CTOs can provide guidance in your career progression towards a CTO role.",
+    },
+    {
+      isApproved: false,
+      title: "Explore Diverse Tech Roles if Unsure About Goals",
+      description:
+        "If you’re uncertain about your career path, try engaging in diverse roles such as consulting projects, part-time roles, or contributions to open-source projects. This can help you discover areas that align more closely with your passion and strengths.",
+    },
+  ],
+}

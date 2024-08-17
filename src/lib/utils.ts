@@ -66,3 +66,25 @@ export const viewIPFSContent = async (cid: string) => {
   const res = await contenido.json()
   return res.resource
 }
+
+export const fetchAI = async (prompt: string) => {
+  const response = await fetch("/api/cgpt", {
+    method: "post",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ prompt }),
+  })
+  let { text } = await response.json()
+
+  text = text.replaceAll("```json", "")
+  text = text.replaceAll("```", "")
+
+  return JSON.parse(text)
+}
+
+export const getAIResponse = async (prompt: string) => {
+  const text = await fetchAI(prompt)
+
+  return text
+}

@@ -29,15 +29,18 @@ type SheLeadsContextType = {
     professionalProfileId: number,
     content: string
   ) => Promise<void>
-  getRecomendation: (
+  getRecommendation: (
     professionalProfileId: number
   ) => Promise<SheLeads.RecommendationStruct | undefined>
   addActionPlan: (recommendationId: number, content: string) => Promise<void>
-  getActionPlan: (
-    recommendationId: number
-  ) => Promise<SheLeads.ActionPlanStruct | undefined>
+  getMyActionPlan: () => Promise<SheLeads.ActionPlanStruct | undefined>
   responsesCGPT: JSON[]
   setResponsesCGPT: Dispatch<SetStateAction<JSON[]>>
+  addRecommendationActionPlan: (
+    recommendationId: number,
+    contentRecommendation: string,
+    contentActionPlan: string
+  ) => Promise<void>
 }
 
 export const SheLeadsContext = createContext<SheLeadsContextType | null>(null)
@@ -77,12 +80,12 @@ const SheLeadsProvider = ({ children }: SheLeadsProviderProps) => {
     await tx1.wait()
   }
 
-  const getRecomendation = async (
+  const getRecommendation = async (
     professionalProfileId: number
   ): Promise<SheLeads.RecommendationStruct | undefined> => {
     if (!contract) return
 
-    return await contract.getRecomendation(professionalProfileId)
+    return await contract.getRecommendation(professionalProfileId)
   }
 
   const addActionPlan = async (
@@ -95,12 +98,33 @@ const SheLeadsProvider = ({ children }: SheLeadsProviderProps) => {
     await tx1.wait()
   }
 
-  const getActionPlan = async (
-    recommendationId: number
-  ): Promise<SheLeads.ActionPlanStruct | undefined> => {
+  const addRecommendationActionPlan = async (
+    recommendationId: number,
+    contentRecommendation: string,
+    contentActionPlan: string
+  ): Promise<void> => {
     if (!contract) return
 
-    return await contract.getActionPlan(recommendationId)
+    const tx1 = await contract.addRecommendationActionPlan(
+      recommendationId,
+      contentRecommendation,
+      contentActionPlan
+    )
+    await tx1.wait()
+  }
+
+  const getMyActionPlan = async (): Promise<
+    SheLeads.ActionPlanStruct | undefined
+  > => {
+    if (!contract) return
+
+    return await contract.getMyActionPlan()
+  }
+
+  const sendRequest = async() => {
+    if (!contract) return
+
+    return await contract.sendRequest()
   }
 
   return (
@@ -110,11 +134,12 @@ const SheLeadsProvider = ({ children }: SheLeadsProviderProps) => {
         addProfessionalProfile,
         getProfessionalProfile,
         addRecommendation,
-        getRecomendation,
+        getRecommendation,
         addActionPlan,
-        getActionPlan,
+        getMyActionPlan,
         responsesCGPT,
         setResponsesCGPT,
+        addRecommendationActionPlan,
       }}
     >
       {children}

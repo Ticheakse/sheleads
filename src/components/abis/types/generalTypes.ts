@@ -7,3 +7,13 @@ declare global {
 }
 
 export type EncryptDataProps = { iv: string; encryptedData: string }
+
+type RecommendationType = {
+  isApproved: boolean
+  title: string
+  description: string
+}
+
+export type RecommendationsType = {
+  recommendations: RecommendationType[]
+}
