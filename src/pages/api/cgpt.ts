@@ -20,7 +20,7 @@ export default async function handler(
   try {
     const completion = await openai.chat.completions.create({
       messages: [{ role: "system", content: prompt }],
-      model: "gpt-4o",
+      model: process.env.CGPT_MODEL ?? "",
     })
 
     const text = completion.choices[0].message.content
