@@ -4,29 +4,33 @@ import * as dotenv from "dotenv"
 
 dotenv.config()
 
+const PRIVATE_KEY = process.env.PRIVATE_KEY || ""
+const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || ""
+const BLOCKSCOUT_KEY = process.env.BLOCKSCOUT_KEY || ""
+
 const config: HardhatUserConfig = {
-  solidity: "0.8.18",
+  solidity: "0.8.19",
   defaultNetwork: "localhost",
   networks: {
     shibarium: {
-      url: "https://www.shibrpc.com", // Replace with Shibarium's RPC URL
-      accounts: [process.env.PRIVATE_KEY as string],
+      url: "https://www.shibrpc.com",
+      accounts: PRIVATE_KEY !== "" ? [PRIVATE_KEY] : [],
     },
     puppynet: {
       url: "https://puppynet.shibrpc.com",
-      accounts: [process.env.PRIVATE_KEY as string],
+      accounts: PRIVATE_KEY !== "" ? [PRIVATE_KEY] : [],
     },
     baseSepolia: {
       url: "https://sepolia.base.org",
-      accounts: [process.env.PRIVATE_KEY as string],
+      accounts: PRIVATE_KEY !== "" ? [PRIVATE_KEY] : [],
       gasPrice: 1000000000,
     },
   },
   etherscan: {
     apiKey: {
-      shibarium: process.env.ETHERSCAN_API_KEY as string,
-      puppynet: process.env.ETHERSCAN_API_KEY as string,
-      baseSepolia: process.env.BLOCKSCOUT_KEY as string,
+      shibarium: ETHERSCAN_API_KEY,
+      puppynet: ETHERSCAN_API_KEY,
+      baseSepolia: BLOCKSCOUT_KEY,
     },
     customChains: [
       {

@@ -1,12 +1,16 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.18;
+pragma solidity ^0.8.19;
 
 // Uncomment this line to use console.log
 // import "hardhat/console.sol";
 
 import {Counters} from "@openzeppelin/contracts/utils/Counters.sol";
+import {FunctionsClient} from "@chainlink/contracts/src/v0.8/functions/v1_0_0/FunctionsClient.sol";
+import {ConfirmedOwner} from "@chainlink/contracts/src/v0.8/shared/access/ConfirmedOwner.sol";
+import {FunctionsRequest} from "@chainlink/contracts/src/v0.8/functions/v1_0_0/libraries/FunctionsRequest.sol";
 
-contract SheLeads {
+contract SheLeads is FunctionsClient, ConfirmedOwner {
+  using FunctionsRequest for FunctionsRequest.Request;
   using Counters for Counters.Counter;
 
   /// @dev Professional Profile id counter
@@ -17,6 +21,14 @@ contract SheLeads {
 
   /// @dev Action Plan id counter
   Counters.Counter actionPlanId;
+
+  // State variables to store the last request ID, response, and error
+  bytes32 public s_lastRequestId;
+  bytes public s_lastResponse;
+  bytes public s_lastError;
+
+  // Custom error type
+  error UnexpectedRequestID(bytes32 requestId);
 
   struct ProfessionalProfile {
     uint256 id;
@@ -45,24 +57,113 @@ contract SheLeads {
   /// @dev mapping professionalProfileId to Recommendation
   mapping(uint256 => Recommendation) recommendation;
 
-  /// @dev mapping recomendationId to ActionPlan
-  mapping(uint256 => ActionPlan) actionPlan;
+  /// @dev mapping recomendationId to action plan id
+  mapping(uint256 => uint256) actionPlan;
+
+  /// @dev mapping address to ActionPlan
+  mapping(address => ActionPlan) userActionPlan;
 
   /// @dev Events
   event AddProfessionalProfile(address indexed userAddress);
   event AddRecommendation(address indexed userAddress);
   event AddActionPlan(address indexed userAddress);
+  event AddRecommendationActionPlan(address indexed userAddress);
+  event Response(
+    bytes32 indexed requestId,
+    string result,
+    bytes response,
+    bytes err
+  );
+  /**
+   * @dev Chainlink Functions
+   */
+  address router = 0xf9B8fc078197181C841c296C876945aaa425B278;
 
-  constructor() {}
+  string source =
+    "const prompt = args[0]"
+    "if ("
+    "!secrets.openAiKey"
+    ") {"
+    "throw Error("
+    "'Need to set OPENAI_KEY environment variable'"
+    ")"
+    "}"
+    "const openAIRequest = Functions.makeHttpRequest({"
+    "url: 'https://api.openai.com/v1/chat/completions',"
+    "method: 'POST',"
+    "headers: {"
+    "'Authorization': `Bearer ${secrets.openAiKey}`,"
+    "'Content-Type': 'application/json'"
+    "},"
+    "data: {"
+    "'model': 'gpt-4o', 'messages': [{"
+    "'role': 'user', 'content': prompt"
+    "}]"
+    "}"
+    "})"
+    "const [openAiResponse] = await Promise.all(["
+    "openAIRequest"
+    "])"
+    "const result = openAiResponse.data.choices[0].message.content"
+    "result = result.replaceAll('```json', '')"
+    "result = result.replaceAll('```', '')"
+    "return Functions.encodeString(JSON.parse(result).finalResult)";
+
+  uint32 gasLimit = 300000;
+
+  bytes32 donID =
+    0x66756e2d626173652d7365706f6c69612d310000000000000000000000000000;
+
+  string public result;
+
+  constructor() FunctionsClient(router) ConfirmedOwner(msg.sender) {}
+
+  function sendRequest(
+    uint64 subscriptionId,
+    bytes memory encryptedSecrets,
+    string[] calldata args
+  ) external returns (bytes32 requestId) {
+    FunctionsRequest.Request memory req;
+    req.initializeRequestForInlineJavaScript(source); // Initialize the request with JS code
+    if (args.length > 0) req.setArgs(args); // Set the arguments for the request
+    if (encryptedSecrets.length > 0) req.addSecretsReference(encryptedSecrets);
+
+    // Send the request and store the request ID
+    s_lastRequestId = _sendRequest(
+      req.encodeCBOR(),
+      subscriptionId,
+      gasLimit,
+      donID
+    );
+
+    return s_lastRequestId;
+  }
+
+  function fulfillRequest(
+    bytes32 requestId,
+    bytes memory response,
+    bytes memory err
+  ) internal override {
+    if (s_lastRequestId != requestId) {
+      revert UnexpectedRequestID(requestId); // Check if request IDs match
+    }
+    // Update the contract's state variables with the response and any errors
+    s_lastResponse = response;
+    result = string(response);
+    s_lastError = err;
+
+    // Emit an event to log the response
+    emit Response(requestId, result, s_lastResponse, s_lastError);
+  }
 
   function addProfessionalProfile(string memory _content) public {
-    uint256 id = recommendationId.current();
+    uint256 id = professionalProfileId.current();
 
     userProfessionalProfile[msg.sender] = id;
     userProfessionalProfileHistory[msg.sender].push(id);
     professionalProfile[id] = ProfessionalProfile({id: id, content: _content});
 
-    recommendationId.increment();
+    professionalProfileId.increment();
 
     emit AddProfessionalProfile(msg.sender);
   }
@@ -81,14 +182,14 @@ contract SheLeads {
     uint256 _professionalProfileId,
     string memory _content
   ) public {
-    uint256 id = professionalProfileId.current();
+    uint256 id = recommendationId.current();
 
     recommendation[_professionalProfileId] = Recommendation({
       id: id,
       content: _content
     });
 
-    professionalProfileId.increment();
+    recommendationId.increment();
 
     emit AddRecommendation(msg.sender);
   }
@@ -105,7 +206,8 @@ contract SheLeads {
   ) public {
     uint256 id = actionPlanId.current();
 
-    actionPlan[_recommendationId] = ActionPlan({id: id, content: _content});
+    actionPlan[_recommendationId] = id;
+    userActionPlan[msg.sender] = ActionPlan({id: id, content: _content});
 
     actionPlanId.increment();
 
@@ -114,7 +216,37 @@ contract SheLeads {
 
   function getActionPlan(
     uint256 _recommendationId
-  ) public view returns (ActionPlan memory) {
+  ) public view returns (uint256) {
     return actionPlan[_recommendationId];
+  }
+
+  function getMyActionPlan() public view returns (ActionPlan memory) {
+    return userActionPlan[msg.sender];
+  }
+
+  function addRecommendationActionPlan(
+    uint256 _professionalProfileId,
+    string memory _contentRecommendation,
+    string memory _contentActionPlan
+  ) public {
+    uint256 id = recommendationId.current();
+
+    recommendation[_professionalProfileId] = Recommendation({
+      id: id,
+      content: _contentRecommendation
+    });
+
+    uint256 idAP = actionPlanId.current();
+
+    actionPlan[id] = idAP;
+    userActionPlan[msg.sender] = ActionPlan({
+      id: idAP,
+      content: _contentActionPlan
+    });
+
+    actionPlanId.increment();
+    recommendationId.increment();
+
+    emit AddRecommendationActionPlan(msg.sender);
   }
 }
