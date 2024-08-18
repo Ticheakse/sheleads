@@ -76,7 +76,7 @@ export const fetchAI = async (prompt: string) => {
     body: JSON.stringify({ prompt }),
   })
   let { text } = await response.json()
-
+console.log('text :>> ', text);
   text = text.replaceAll("```json", "")
   text = text.replaceAll("```", "")
 

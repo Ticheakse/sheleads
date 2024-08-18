@@ -90,3 +90,52 @@ export const professionalProfileRecommendations = {
     },
   ],
 }
+
+export const professionalProfileWaleska = {
+  workExperience: [
+    {
+      jobTitle: "Blockchain event planner",
+      companyName: "Block&Change",
+      duration: "1.5 years",
+      mainResponsabilities:
+        "Founder, CEO, CFO, I wore many hats, I had to meet the sponsors, talk to them , get the money, promote the events, do many wevinars and X spaces, do community engagement, all the logistics for the events",
+      specificSkills:
+        "Managing people, planning, selling and many other",
+    },
+    {
+      jobTitle: "Hacker House Organization and Logistics for EthCC Brussels",
+      companyName: "NEAR DevHub",
+      duration: "2 months",
+      mainResponsabilities:
+        "Finding a suitable venue and negotiating payments and terms Making sure venue, catering, coffee and water stations are set accordingly for each event A dedicated team of staff will be available onsite to provide assistance, address any queries or concerns, and ensure the smooth operation of the Hacker House Ensuring that all logistical arrangements are in place for an effortless experience",
+      specificSkills:
+        "All logistics related",
+    },
+  ],
+  educationCertification: {
+    highestLevelOfEducation: "Bachelors degree",
+    fieldOfStudy: "Hotel and restaurant management",
+    certifications:
+      "Digital Marketing, copywritting, Video editing, social Media Management",
+  },
+  personalCompetences: {
+    strengths:
+      "Proficient, planner, organized, long term thinker",
+    weaknesses:
+      "stressed, perfectionist",
+  },
+  goalsAndInspirations: {
+    WhatWouldYouLikeToDo:
+      "Become a UI/UX designer",
+    shortTermGoals:
+      "Learn UI/UX",
+    longTermGoals:
+      "Learn about AI",
+  },
+  personalInterests: {
+    areasOfPersonalInterest:
+      "Technology, AI, Blockchain, Art, Classical Music",
+    timeAvailability:
+      "1-2 hours a day",
+  },
+}

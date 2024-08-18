@@ -142,7 +142,9 @@ const Recommendations = () => {
 
   return (
     <div className="flex flex-1 flex-col p-4 md:p-8 max-w-4xl mx-auto bg-background m-8 shadow-lg rounded-lg gap-y-5">
-      <h1 className="text-xl font-semibold text-center">Recommendations</h1>
+      <h1 className="text-xl font-semibold text-center">
+        Tailored AI Recommendations
+      </h1>
       {recommendations?.recommendations == undefined ? (
         <h1>loading</h1>
       ) : (

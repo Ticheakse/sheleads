@@ -17,7 +17,10 @@ import {
 import { Input } from "@/components/ui/input"
 import { ReloadIcon } from "@radix-ui/react-icons"
 import { upload } from "@/lib/utils"
-import { professionalProfileSoftwareEngineer } from "@/components/data/professionalProfile"
+import {
+  professionalProfileSoftwareEngineer,
+  professionalProfileWaleska,
+} from "@/components/data/professionalProfile"
 import { Textarea } from "@/components/ui/textarea"
 
 const formSchema = z.object({
@@ -109,8 +112,8 @@ const Profile = () => {
     control: form.control,
   })
 
-  const engData = () => {
-    setDummyData(professionalProfileSoftwareEngineer)
+  const loadDummyData = (data: any) => {
+    setDummyData(data)
   }
 
   useEffect(() => {
@@ -145,7 +148,7 @@ const Profile = () => {
     <div className="flex flex-1 flex-col p-4 md:p-8 max-w-4xl mx-auto bg-background m-8 shadow-lg rounded-lg gap-y-5">
       <div className="text-center">
         <h1 className="text-2xl font-semibold underline">
-          Professional Profile
+          Let’s Get Started with your Profile!
         </h1>
         <span className="text-sm">Texto para guiar al usuario</span>
       </div>
@@ -285,7 +288,10 @@ const Profile = () => {
                   <FormItem>
                     <FormLabel>highestLevelOfEducation</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="highestLevelOfEducation" {...field} />
+                      <Textarea
+                        placeholder="highestLevelOfEducation"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -450,9 +456,21 @@ const Profile = () => {
           </div>
         </form>
         <div>
-          <Button size="sm" onClick={engData}>
-            Software Engineer
-          </Button>
+          <span>dummy data</span>
+          <div className="flex w-full justify-start gap-2">
+            <Button
+              size="sm"
+              onClick={() => loadDummyData(professionalProfileSoftwareEngineer)}
+            >
+              Software Engineer
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => loadDummyData(professionalProfileWaleska)}
+            >
+              Waleska
+            </Button>
+          </div>
         </div>
       </Form>
     </div>
