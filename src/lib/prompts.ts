@@ -1,9 +1,18 @@
+import { RecommendationsType } from "@/components/abis/types/generalTypes"
+
 export const getPromptForRecommendations = (professionalProfile: any) =>
   `Based on the this JSON ${JSON.stringify(
     professionalProfile
   )}, create 5 personalized recommendations for an AI-powered career coaching app. how to display learning suggestions, 
   networking opportunities, short- and long-term goals, and what to do if the user is unsure about their goals. 
-  The response must be in JSON format in this format: { recommendations: [{ isApproved: false, title: "", description: "" }] }`
+  The response must be in JSON format in this format: { recommendations: [{ isApproved: false, title: "", description: "" }] } 
+  where isApproved must always be false`
+
+export const getPromptRegenerateRecommendation = (
+  recommendations: RecommendationsType,
+  index: number
+) =>
+  `Based on this JSON ${recommendations} you made, remove the index ${index} from the array and add 1 more recommendations in the same index. The response only in JSON format.`
 
 export const getPromptForValidation = (
   recommendations: string,

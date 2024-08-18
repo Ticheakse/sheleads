@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input"
 import { ReloadIcon } from "@radix-ui/react-icons"
 import { upload } from "@/lib/utils"
 import { professionalProfileSoftwareEngineer } from "@/components/data/professionalProfile"
+import { Textarea } from "@/components/ui/textarea"
 
 const formSchema = z.object({
   workExperience: z.array(
@@ -212,7 +213,7 @@ const Profile = () => {
                         <FormItem>
                           <FormLabel>mainResponsabilities</FormLabel>
                           <FormControl>
-                            <Input
+                            <Textarea
                               placeholder="mainResponsabilities"
                               {...field}
                             />
@@ -230,7 +231,7 @@ const Profile = () => {
                         <FormItem>
                           <FormLabel>specificSkills</FormLabel>
                           <FormControl>
-                            <Input placeholder="specificSkills" {...field} />
+                            <Textarea placeholder="specificSkills" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -245,7 +246,7 @@ const Profile = () => {
                         className="w-full"
                         onClick={() => remove(index)}
                       >
-                        Delete Experience {index + 1}
+                        Delete Work Exp. {index + 1}
                       </Button>
                     )}
                   </div>
@@ -284,7 +285,7 @@ const Profile = () => {
                   <FormItem>
                     <FormLabel>highestLevelOfEducation</FormLabel>
                     <FormControl>
-                      <Input placeholder="highestLevelOfEducation" {...field} />
+                      <Textarea placeholder="highestLevelOfEducation" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -297,7 +298,7 @@ const Profile = () => {
                   <FormItem>
                     <FormLabel>fieldOfStudy</FormLabel>
                     <FormControl>
-                      <Input placeholder="fieldOfStudy" {...field} />
+                      <Textarea placeholder="fieldOfStudy" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -310,7 +311,7 @@ const Profile = () => {
                   <FormItem>
                     <FormLabel>certifications</FormLabel>
                     <FormControl>
-                      <Input placeholder="certifications" {...field} />
+                      <Textarea placeholder="certifications" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -332,7 +333,7 @@ const Profile = () => {
                   <FormItem>
                     <FormLabel>strengths</FormLabel>
                     <FormControl>
-                      <Input placeholder="strengths" {...field} />
+                      <Textarea placeholder="strengths" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -345,7 +346,7 @@ const Profile = () => {
                   <FormItem>
                     <FormLabel>weaknesses</FormLabel>
                     <FormControl>
-                      <Input placeholder="weaknesses" {...field} />
+                      <Textarea placeholder="weaknesses" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -366,7 +367,7 @@ const Profile = () => {
                   <FormItem>
                     <FormLabel>WhatWouldYouLikeToDo</FormLabel>
                     <FormControl>
-                      <Input placeholder="WhatWouldYouLikeToDo" {...field} />
+                      <Textarea placeholder="WhatWouldYouLikeToDo" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -379,7 +380,7 @@ const Profile = () => {
                   <FormItem>
                     <FormLabel>shortTermGoals</FormLabel>
                     <FormControl>
-                      <Input placeholder="shortTermGoals" {...field} />
+                      <Textarea placeholder="shortTermGoals" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -392,7 +393,7 @@ const Profile = () => {
                   <FormItem>
                     <FormLabel>longTermGoals</FormLabel>
                     <FormControl>
-                      <Input placeholder="longTermGoals" {...field} />
+                      <Textarea placeholder="longTermGoals" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -413,7 +414,10 @@ const Profile = () => {
                   <FormItem>
                     <FormLabel>areasOfPersonalInterest</FormLabel>
                     <FormControl>
-                      <Input placeholder="areasOfPersonalInterest" {...field} />
+                      <Textarea
+                        placeholder="areasOfPersonalInterest"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -426,7 +430,9 @@ const Profile = () => {
                   <FormItem>
                     <FormLabel>timeAvailability</FormLabel>
                     <FormControl>
-                      <Input placeholder="timeAvailability" {...field} />
+                      <Textarea placeholder="timeAvailability" {...field}>
+                        {field.value}
+                      </Textarea>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -443,11 +449,11 @@ const Profile = () => {
             </Button>
           </div>
         </form>
-        {/* <div>
+        <div>
           <Button size="sm" onClick={engData}>
             Software Engineer
           </Button>
-        </div> */}
+        </div>
       </Form>
     </div>
   )

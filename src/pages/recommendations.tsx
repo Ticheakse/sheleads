@@ -17,12 +17,13 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
-import { getAIResponse, upload, viewIPFSContent } from "@/lib/utils"
+import { cn, getAIResponse, upload, viewIPFSContent } from "@/lib/utils"
 import { SheLeads } from "@/components/abis/types/SheLeads"
 import {
   getPromptForActionPlan,
   getPromptForRecommendations,
   getPromptForValidation,
+  getPromptRegenerateRecommendation,
 } from "@/lib/prompts"
 import { RecommendationsType } from "@/components/abis/types/generalTypes"
 
@@ -48,6 +49,8 @@ const Recommendations = () => {
     contract,
   } = useSheLeadsContext()
   const [isLoading, setIsLoading] = useState(false)
+  const [isRegenerating, setIsRegenerating] = useState(false)
+  const [indexRegen, setIndexRegen] = useState(0)
   const [professionalProfileId, setProfessionalProfileId] = useState<string>("")
   const [recommendations, setRecommendations] = useState<RecommendationsType>()
   const [professionalProfile, setProfessionalProfile] = useState<
@@ -64,7 +67,8 @@ const Recommendations = () => {
 
   useEffect(() => {
     const asyncFunc = async () => {
-      if (!contract) return
+      if (!(contract && professionalProfileId === "")) return
+      console.log("professionalProfileId :>> ", professionalProfileId)
 
       const professionalProfile = await getProfessionalProfile()
       if (professionalProfile === null) return
@@ -79,10 +83,20 @@ const Recommendations = () => {
     }
 
     asyncFunc()
-  }, [contract])
+  }, [contract, professionalProfileId])
 
-  const regenerate = (id: number) => {
-    console.log("id :>> ", id)
+  const regenerate = async (index: number) => {
+    setIsRegenerating(true)
+    setIndexRegen(index)
+    let promptRegenerateRecommendation = getPromptRegenerateRecommendation(
+      /* @ts-ignore */
+      JSON.stringify(recommendations),
+      index
+    )
+    const recomm = await getAIResponse(promptRegenerateRecommendation)
+
+    setRecommendations(recomm)
+    setIsRegenerating(false)
   }
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -136,71 +150,102 @@ const Recommendations = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             {fields.map((field, index) => (
               <div key={field.id}>
-                <FormField
-                  control={form.control}
-                  name={`recommendations.${index}.isApproved`}
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row justify-between space-x-3 space-y-0 ">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                <div
+                  className={cn(
+                    `grid grid-cols-8 gap-4 border-2 rounded-md border-gray-500/40 p-4 hover:shadow-lg hover:scale-[1.02] transition-all duration-300`,
+                    isRegenerating && index === indexRegen
+                      ? "text-muted-foreground"
+                      : ""
                   )}
-                />
-                <FormField
-                  control={form.control}
-                  name={`recommendations.${index}.title`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Title: {field.value}</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="hidden"
-                          placeholder="companyName"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name={`recommendations.${index}.description`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Description: {field.value}</FormLabel>
-                      <FormControl>
-                        <Input type="hidden" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={(e) => {
-                    e.preventDefault()
-
-                    regenerate(index)
-                  }}
                 >
-                  Regenerate
-                </Button>
+                  <div className="flex flex-row gap-4 col-span-3">
+                    <div className="flex justify-end items-center">
+                      <FormField
+                        control={form.control}
+                        name={`recommendations.${index}.isApproved`}
+                        render={({ field }) => (
+                          <FormItem className="flex flex-row justify-between space-x-3 space-y-0 ">
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <div className="flex justify-end items-center">
+                      <FormField
+                        control={form.control}
+                        name={`recommendations.${index}.title`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="flex flex-col gap-2">
+                              <p className="text-base">{field.value}</p>
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                type="hidden"
+                                placeholder="companyName"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-span-4">
+                    <FormField
+                      control={form.control}
+                      name={`recommendations.${index}.description`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex flex-col gap-2">
+                            <h2 className="text-sm font-semibold">
+                              Description:
+                            </h2>{" "}
+                            <p className="px-2">{field.value}</p>
+                          </FormLabel>
+                          <FormControl>
+                            <Input type="hidden" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="flex justify-end items-center">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={isRegenerating}
+                      onClick={(e) => {
+                        e.preventDefault()
+
+                        regenerate(index)
+                      }}
+                    >
+                      Regenerate
+                    </Button>
+                  </div>
+                </div>
               </div>
             ))}
-
-            <Button type="submit" disabled={isLoading}>
-              {isLoading && (
-                <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-              )}
-              Generate Action Plan
-            </Button>
+            <div className="flex justify-end w-full pt-2">
+              <Button
+                type="submit"
+                disabled={!form.formState.isDirty || isLoading}
+              >
+                {isLoading && (
+                  <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                Generate Action Plan
+              </Button>
+            </div>
           </form>
         </Form>
       )}
