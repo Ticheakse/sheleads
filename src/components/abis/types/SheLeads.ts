@@ -21,7 +21,7 @@ import type {
   TypedLogDescription,
   TypedListener,
   TypedContractMethod,
-} from "./common";
+} from "../common";
 
 export declare namespace SheLeads {
   export type ActionPlanStruct = { id: BigNumberish; content: string };
@@ -49,12 +49,23 @@ export declare namespace SheLeads {
 export interface SheLeadsInterface extends Interface {
   getFunction(
     nameOrSignature:
+      | "acceptOwnership"
       | "addActionPlan"
       | "addProfessionalProfile"
       | "addRecommendation"
+      | "addRecommendationActionPlan"
       | "getActionPlan"
+      | "getMyActionPlan"
       | "getProfessionalProfile"
       | "getRecommendation"
+      | "handleOracleFulfillment"
+      | "owner"
+      | "result"
+      | "s_lastError"
+      | "s_lastRequestId"
+      | "s_lastResponse"
+      | "sendRequest"
+      | "transferOwnership"
   ): FunctionFragment;
 
   getEvent(
@@ -62,8 +73,18 @@ export interface SheLeadsInterface extends Interface {
       | "AddActionPlan"
       | "AddProfessionalProfile"
       | "AddRecommendation"
+      | "AddRecommendationActionPlan"
+      | "OwnershipTransferRequested"
+      | "OwnershipTransferred"
+      | "RequestFulfilled"
+      | "RequestSent"
+      | "Response"
   ): EventFragment;
 
+  encodeFunctionData(
+    functionFragment: "acceptOwnership",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "addActionPlan",
     values: [BigNumberish, string]
@@ -77,8 +98,16 @@ export interface SheLeadsInterface extends Interface {
     values: [BigNumberish, string]
   ): string;
   encodeFunctionData(
+    functionFragment: "addRecommendationActionPlan",
+    values: [BigNumberish, string, string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getActionPlan",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getMyActionPlan",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getProfessionalProfile",
@@ -88,7 +117,37 @@ export interface SheLeadsInterface extends Interface {
     functionFragment: "getRecommendation",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: "handleOracleFulfillment",
+    values: [BytesLike, BytesLike, BytesLike]
+  ): string;
+  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(functionFragment: "result", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "s_lastError",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "s_lastRequestId",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "s_lastResponse",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "sendRequest",
+    values: [BigNumberish, BytesLike, string[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "transferOwnership",
+    values: [AddressLike]
+  ): string;
 
+  decodeFunctionResult(
+    functionFragment: "acceptOwnership",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "addActionPlan",
     data: BytesLike
@@ -102,7 +161,15 @@ export interface SheLeadsInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "addRecommendationActionPlan",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getActionPlan",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getMyActionPlan",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -111,6 +178,32 @@ export interface SheLeadsInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getRecommendation",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "handleOracleFulfillment",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "result", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "s_lastError",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "s_lastRequestId",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "s_lastResponse",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "sendRequest",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
 }
@@ -144,6 +237,93 @@ export namespace AddRecommendationEvent {
   export type OutputTuple = [userAddress: string];
   export interface OutputObject {
     userAddress: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace AddRecommendationActionPlanEvent {
+  export type InputTuple = [userAddress: AddressLike];
+  export type OutputTuple = [userAddress: string];
+  export interface OutputObject {
+    userAddress: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace OwnershipTransferRequestedEvent {
+  export type InputTuple = [from: AddressLike, to: AddressLike];
+  export type OutputTuple = [from: string, to: string];
+  export interface OutputObject {
+    from: string;
+    to: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace OwnershipTransferredEvent {
+  export type InputTuple = [from: AddressLike, to: AddressLike];
+  export type OutputTuple = [from: string, to: string];
+  export interface OutputObject {
+    from: string;
+    to: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace RequestFulfilledEvent {
+  export type InputTuple = [id: BytesLike];
+  export type OutputTuple = [id: string];
+  export interface OutputObject {
+    id: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace RequestSentEvent {
+  export type InputTuple = [id: BytesLike];
+  export type OutputTuple = [id: string];
+  export interface OutputObject {
+    id: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace ResponseEvent {
+  export type InputTuple = [
+    requestId: BytesLike,
+    result: string,
+    response: BytesLike,
+    err: BytesLike
+  ];
+  export type OutputTuple = [
+    requestId: string,
+    result: string,
+    response: string,
+    err: string
+  ];
+  export interface OutputObject {
+    requestId: string;
+    result: string;
+    response: string;
+    err: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -194,6 +374,8 @@ export interface SheLeads extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
+  acceptOwnership: TypedContractMethod<[], [void], "nonpayable">;
+
   addActionPlan: TypedContractMethod<
     [_recommendationId: BigNumberish, _content: string],
     [void],
@@ -212,8 +394,24 @@ export interface SheLeads extends BaseContract {
     "nonpayable"
   >;
 
+  addRecommendationActionPlan: TypedContractMethod<
+    [
+      _professionalProfileId: BigNumberish,
+      _contentRecommendation: string,
+      _contentActionPlan: string
+    ],
+    [void],
+    "nonpayable"
+  >;
+
   getActionPlan: TypedContractMethod<
     [_recommendationId: BigNumberish],
+    [bigint],
+    "view"
+  >;
+
+  getMyActionPlan: TypedContractMethod<
+    [],
     [SheLeads.ActionPlanStructOutput],
     "view"
   >;
@@ -230,10 +428,41 @@ export interface SheLeads extends BaseContract {
     "view"
   >;
 
+  handleOracleFulfillment: TypedContractMethod<
+    [requestId: BytesLike, response: BytesLike, err: BytesLike],
+    [void],
+    "nonpayable"
+  >;
+
+  owner: TypedContractMethod<[], [string], "view">;
+
+  result: TypedContractMethod<[], [string], "view">;
+
+  s_lastError: TypedContractMethod<[], [string], "view">;
+
+  s_lastRequestId: TypedContractMethod<[], [string], "view">;
+
+  s_lastResponse: TypedContractMethod<[], [string], "view">;
+
+  sendRequest: TypedContractMethod<
+    [subscriptionId: BigNumberish, encryptedSecrets: BytesLike, args: string[]],
+    [string],
+    "nonpayable"
+  >;
+
+  transferOwnership: TypedContractMethod<
+    [to: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
   ): T;
 
+  getFunction(
+    nameOrSignature: "acceptOwnership"
+  ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "addActionPlan"
   ): TypedContractMethod<
@@ -252,12 +481,22 @@ export interface SheLeads extends BaseContract {
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "getActionPlan"
+    nameOrSignature: "addRecommendationActionPlan"
   ): TypedContractMethod<
-    [_recommendationId: BigNumberish],
-    [SheLeads.ActionPlanStructOutput],
-    "view"
+    [
+      _professionalProfileId: BigNumberish,
+      _contentRecommendation: string,
+      _contentActionPlan: string
+    ],
+    [void],
+    "nonpayable"
   >;
+  getFunction(
+    nameOrSignature: "getActionPlan"
+  ): TypedContractMethod<[_recommendationId: BigNumberish], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getMyActionPlan"
+  ): TypedContractMethod<[], [SheLeads.ActionPlanStructOutput], "view">;
   getFunction(
     nameOrSignature: "getProfessionalProfile"
   ): TypedContractMethod<
@@ -272,6 +511,38 @@ export interface SheLeads extends BaseContract {
     [SheLeads.RecommendationStructOutput],
     "view"
   >;
+  getFunction(
+    nameOrSignature: "handleOracleFulfillment"
+  ): TypedContractMethod<
+    [requestId: BytesLike, response: BytesLike, err: BytesLike],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "owner"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "result"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "s_lastError"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "s_lastRequestId"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "s_lastResponse"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "sendRequest"
+  ): TypedContractMethod<
+    [subscriptionId: BigNumberish, encryptedSecrets: BytesLike, args: string[]],
+    [string],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "transferOwnership"
+  ): TypedContractMethod<[to: AddressLike], [void], "nonpayable">;
 
   getEvent(
     key: "AddActionPlan"
@@ -293,6 +564,48 @@ export interface SheLeads extends BaseContract {
     AddRecommendationEvent.InputTuple,
     AddRecommendationEvent.OutputTuple,
     AddRecommendationEvent.OutputObject
+  >;
+  getEvent(
+    key: "AddRecommendationActionPlan"
+  ): TypedContractEvent<
+    AddRecommendationActionPlanEvent.InputTuple,
+    AddRecommendationActionPlanEvent.OutputTuple,
+    AddRecommendationActionPlanEvent.OutputObject
+  >;
+  getEvent(
+    key: "OwnershipTransferRequested"
+  ): TypedContractEvent<
+    OwnershipTransferRequestedEvent.InputTuple,
+    OwnershipTransferRequestedEvent.OutputTuple,
+    OwnershipTransferRequestedEvent.OutputObject
+  >;
+  getEvent(
+    key: "OwnershipTransferred"
+  ): TypedContractEvent<
+    OwnershipTransferredEvent.InputTuple,
+    OwnershipTransferredEvent.OutputTuple,
+    OwnershipTransferredEvent.OutputObject
+  >;
+  getEvent(
+    key: "RequestFulfilled"
+  ): TypedContractEvent<
+    RequestFulfilledEvent.InputTuple,
+    RequestFulfilledEvent.OutputTuple,
+    RequestFulfilledEvent.OutputObject
+  >;
+  getEvent(
+    key: "RequestSent"
+  ): TypedContractEvent<
+    RequestSentEvent.InputTuple,
+    RequestSentEvent.OutputTuple,
+    RequestSentEvent.OutputObject
+  >;
+  getEvent(
+    key: "Response"
+  ): TypedContractEvent<
+    ResponseEvent.InputTuple,
+    ResponseEvent.OutputTuple,
+    ResponseEvent.OutputObject
   >;
 
   filters: {
@@ -327,6 +640,72 @@ export interface SheLeads extends BaseContract {
       AddRecommendationEvent.InputTuple,
       AddRecommendationEvent.OutputTuple,
       AddRecommendationEvent.OutputObject
+    >;
+
+    "AddRecommendationActionPlan(address)": TypedContractEvent<
+      AddRecommendationActionPlanEvent.InputTuple,
+      AddRecommendationActionPlanEvent.OutputTuple,
+      AddRecommendationActionPlanEvent.OutputObject
+    >;
+    AddRecommendationActionPlan: TypedContractEvent<
+      AddRecommendationActionPlanEvent.InputTuple,
+      AddRecommendationActionPlanEvent.OutputTuple,
+      AddRecommendationActionPlanEvent.OutputObject
+    >;
+
+    "OwnershipTransferRequested(address,address)": TypedContractEvent<
+      OwnershipTransferRequestedEvent.InputTuple,
+      OwnershipTransferRequestedEvent.OutputTuple,
+      OwnershipTransferRequestedEvent.OutputObject
+    >;
+    OwnershipTransferRequested: TypedContractEvent<
+      OwnershipTransferRequestedEvent.InputTuple,
+      OwnershipTransferRequestedEvent.OutputTuple,
+      OwnershipTransferRequestedEvent.OutputObject
+    >;
+
+    "OwnershipTransferred(address,address)": TypedContractEvent<
+      OwnershipTransferredEvent.InputTuple,
+      OwnershipTransferredEvent.OutputTuple,
+      OwnershipTransferredEvent.OutputObject
+    >;
+    OwnershipTransferred: TypedContractEvent<
+      OwnershipTransferredEvent.InputTuple,
+      OwnershipTransferredEvent.OutputTuple,
+      OwnershipTransferredEvent.OutputObject
+    >;
+
+    "RequestFulfilled(bytes32)": TypedContractEvent<
+      RequestFulfilledEvent.InputTuple,
+      RequestFulfilledEvent.OutputTuple,
+      RequestFulfilledEvent.OutputObject
+    >;
+    RequestFulfilled: TypedContractEvent<
+      RequestFulfilledEvent.InputTuple,
+      RequestFulfilledEvent.OutputTuple,
+      RequestFulfilledEvent.OutputObject
+    >;
+
+    "RequestSent(bytes32)": TypedContractEvent<
+      RequestSentEvent.InputTuple,
+      RequestSentEvent.OutputTuple,
+      RequestSentEvent.OutputObject
+    >;
+    RequestSent: TypedContractEvent<
+      RequestSentEvent.InputTuple,
+      RequestSentEvent.OutputTuple,
+      RequestSentEvent.OutputObject
+    >;
+
+    "Response(bytes32,string,bytes,bytes)": TypedContractEvent<
+      ResponseEvent.InputTuple,
+      ResponseEvent.OutputTuple,
+      ResponseEvent.OutputObject
+    >;
+    Response: TypedContractEvent<
+      ResponseEvent.InputTuple,
+      ResponseEvent.OutputTuple,
+      ResponseEvent.OutputObject
     >;
   };
 }
