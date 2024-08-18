@@ -48,4 +48,4 @@ export const getPromptForLinkedIn = (
  create the content needed to update her LinkedIn profile. Include the following sections: Professional Bio, Headline/Short Description, 
  Work Experience (with responsibilities and achievements), Skills & Endorsements, Education, Professional Summary, 
  Volunteer Experience (if applicable), Recommendations, Personal Interests & Causes, Contact Information, and Media Attachments (optional).
- The response is in JSON format.`
+ The response is in JSON format like this { linkedinProfileUpdate: { professionalBio: "", headlineShortDescription: "", workExperience: [{ jobTitle: "", companyName: "", duration: "", mainResponsibilities: "",  achievements: "", specificSkills: [""]}], skillsAndEndorsements: [""]}}`
