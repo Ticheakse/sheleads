@@ -31,7 +31,9 @@ export const getPromptForActionPlan = (
   )} and the recommendation JSON ${JSON.stringify(
     recommendations
   )}, genera un plan de acción para el futuro de la chica
- The response is in JSON format.`
+ The response is in JSON format like this: { actionPlan: [{ item: "", goals: [{ goal: "", actions: [{ actionTitle: "", description: "", timeline: "", resources: [{ resourceName: "", link: "" }]}]}]}] }
+ with at least three action plan, three goal each one, one action for each one, at least two resources each
+  `
 
 export const getPromptForLinkedIn = (
   professionalProfile: any,
