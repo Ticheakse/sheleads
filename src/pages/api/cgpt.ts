@@ -6,6 +6,10 @@ const openai = new OpenAI({
   organization: process.env.OPENAI_ORGANIZATION,
 })
 
+export const config = {
+  maxDuration: 60,
+};
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
