@@ -1,9 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-// Uncomment this line to use console.log
-// import "hardhat/console.sol";
-
 import {Counters} from "@openzeppelin/contracts/utils/Counters.sol";
 import {FunctionsClient} from "@chainlink/contracts/src/v0.8/functions/v1_0_0/FunctionsClient.sol";
 import {ConfirmedOwner} from "@chainlink/contracts/src/v0.8/shared/access/ConfirmedOwner.sol";
@@ -33,16 +30,19 @@ contract SheLeads is FunctionsClient, ConfirmedOwner {
   struct ProfessionalProfile {
     uint256 id;
     string content;
+    uint256 createdAt;
   }
 
   struct Recommendation {
     uint256 id;
     string content;
+    uint256 createdAt;
   }
 
   struct ActionPlan {
     uint256 id;
     string content;
+    uint256 createdAt;
   }
 
   /// @dev mapping address to professionalProfileId
@@ -161,7 +161,11 @@ contract SheLeads is FunctionsClient, ConfirmedOwner {
 
     userProfessionalProfile[msg.sender] = id;
     userProfessionalProfileHistory[msg.sender].push(id);
-    professionalProfile[id] = ProfessionalProfile({id: id, content: _content});
+    professionalProfile[id] = ProfessionalProfile({
+      id: id,
+      content: _content,
+      createdAt: block.timestamp
+    });
 
     professionalProfileId.increment();
 
@@ -186,7 +190,8 @@ contract SheLeads is FunctionsClient, ConfirmedOwner {
 
     recommendation[_professionalProfileId] = Recommendation({
       id: id,
-      content: _content
+      content: _content,
+      createdAt: block.timestamp
     });
 
     recommendationId.increment();
@@ -207,7 +212,11 @@ contract SheLeads is FunctionsClient, ConfirmedOwner {
     uint256 id = actionPlanId.current();
 
     actionPlan[_recommendationId] = id;
-    userActionPlan[msg.sender] = ActionPlan({id: id, content: _content});
+    userActionPlan[msg.sender] = ActionPlan({
+      id: id,
+      content: _content,
+      createdAt: block.timestamp
+    });
 
     actionPlanId.increment();
 
@@ -233,7 +242,8 @@ contract SheLeads is FunctionsClient, ConfirmedOwner {
 
     recommendation[_professionalProfileId] = Recommendation({
       id: id,
-      content: _contentRecommendation
+      content: _contentRecommendation,
+      createdAt: block.timestamp
     });
 
     uint256 idAP = actionPlanId.current();
@@ -241,12 +251,42 @@ contract SheLeads is FunctionsClient, ConfirmedOwner {
     actionPlan[id] = idAP;
     userActionPlan[msg.sender] = ActionPlan({
       id: idAP,
-      content: _contentActionPlan
+      content: _contentActionPlan,
+      createdAt: block.timestamp
     });
 
     actionPlanId.increment();
     recommendationId.increment();
 
     emit AddRecommendationActionPlan(msg.sender);
+  }
+
+  function getRecommendations() public view returns (Recommendation[] memory) {
+    uint256[] memory upHistory = userProfessionalProfileHistory[msg.sender];
+    uint256 countRec = 0;
+
+    for (uint256 i = 0; i < upHistory.length; i++) {
+      if (
+        keccak256(bytes(recommendation[upHistory[i]].content)) !=
+        keccak256(bytes(""))
+      ) {
+        countRec++;
+      }
+    }
+
+    Recommendation[] memory rec = new Recommendation[](countRec);
+    uint256 sumRec = 0;
+
+    for (uint256 i = 0; i < upHistory.length; i++) {
+      if (
+        keccak256(bytes(recommendation[upHistory[i]].content)) !=
+        keccak256(bytes(""))
+      ) {
+        rec[sumRec] = recommendation[upHistory[i]];
+        sumRec++;
+      }
+    }
+
+    return rec;
   }
 }

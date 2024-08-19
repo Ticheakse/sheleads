@@ -25,7 +25,7 @@ describe("SheLeads", function () {
 
       assert.equal(pp.content, content)
     })
-    
+
     it("Add Recomendation", async () => {
       const { sheLeads } = await loadFixture(deploySheLeads)
 
@@ -70,6 +70,78 @@ describe("SheLeads", function () {
       // const ap = await sheLeads.getActionPlan(rec.id)
 
       // assert.equal(ap.content, content)
+    })
+
+    it("get recommendations", async () => {
+      const { sheLeads } = await loadFixture(deploySheLeads)
+
+      let content = "123-1323DSR"
+
+      await sheLeads.addProfessionalProfile(content)
+
+      let pp = await sheLeads.getProfessionalProfile()
+      console.log('pp.id :>> ', pp.id);
+      
+      content = "885553366"
+
+      await sheLeads.addRecommendation(pp.id, content)
+
+      let rec = await sheLeads.getRecommendation(pp.id)
+
+      // assert.equal(pp.content, content)
+      
+      content = "2334987"
+      
+      await sheLeads.addProfessionalProfile(content)
+      
+      pp = await sheLeads.getProfessionalProfile()
+      console.log('pp.id :>> ', pp.id);
+
+
+      content = "23rverv45"
+
+      await sheLeads.addRecommendation(pp.id, content)
+
+      content = "33333333"
+      
+      await sheLeads.addProfessionalProfile(content)
+      pp = await sheLeads.getProfessionalProfile()
+      console.log('pp.id :>> ', pp.id);
+      content = "4563453"
+      
+      await sheLeads.addProfessionalProfile(content)
+      pp = await sheLeads.getProfessionalProfile()
+      console.log('pp.id :>> ', pp.id);
+      content = "456<sdv<ds3453"
+      
+      await sheLeads.addProfessionalProfile(content)
+      pp = await sheLeads.getProfessionalProfile()
+      console.log('pp.id :>> ', pp.id);
+      pp = await sheLeads.getProfessionalProfile()
+      
+      content = "2112rv45"
+
+      await sheLeads.addRecommendation(pp.id, content)
+      content = "asdasd3423"
+      
+      await sheLeads.addProfessionalProfile(content)
+
+      pp = await sheLeads.getProfessionalProfile()
+      console.log('pp.id :>> ', pp.id);
+      
+      content = "23rve55rv45"
+
+      await sheLeads.addRecommendation(pp.id, content)
+
+      
+      const rec2 = await sheLeads.getRecommendations()
+      console.log("rec2 :>> ", rec2)
+      
+      
+      // console.log("rec2 :>> ", rec2[0].id)
+      // console.log("rec2 :>> ", rec2[1].id)
+
+      // assert.equal(rec.content, content)
     })
   })
 })
