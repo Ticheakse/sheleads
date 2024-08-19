@@ -24,26 +24,41 @@ import type {
 } from "../common";
 
 export declare namespace SheLeads {
-  export type ActionPlanStruct = { id: BigNumberish; content: string };
-
-  export type ActionPlanStructOutput = [id: bigint, content: string] & {
-    id: bigint;
+  export type ActionPlanStruct = {
+    id: BigNumberish;
     content: string;
+    createdAt: BigNumberish;
   };
 
-  export type ProfessionalProfileStruct = { id: BigNumberish; content: string };
+  export type ActionPlanStructOutput = [
+    id: bigint,
+    content: string,
+    createdAt: bigint
+  ] & { id: bigint; content: string; createdAt: bigint };
+
+  export type ProfessionalProfileStruct = {
+    id: BigNumberish;
+    content: string;
+    createdAt: BigNumberish;
+  };
 
   export type ProfessionalProfileStructOutput = [
     id: bigint,
-    content: string
-  ] & { id: bigint; content: string };
+    content: string,
+    createdAt: bigint
+  ] & { id: bigint; content: string; createdAt: bigint };
 
-  export type RecommendationStruct = { id: BigNumberish; content: string };
-
-  export type RecommendationStructOutput = [id: bigint, content: string] & {
-    id: bigint;
+  export type RecommendationStruct = {
+    id: BigNumberish;
     content: string;
+    createdAt: BigNumberish;
   };
+
+  export type RecommendationStructOutput = [
+    id: bigint,
+    content: string,
+    createdAt: bigint
+  ] & { id: bigint; content: string; createdAt: bigint };
 }
 
 export interface SheLeadsInterface extends Interface {
@@ -58,6 +73,7 @@ export interface SheLeadsInterface extends Interface {
       | "getMyActionPlan"
       | "getProfessionalProfile"
       | "getRecommendation"
+      | "getRecommendations"
       | "handleOracleFulfillment"
       | "owner"
       | "result"
@@ -116,6 +132,10 @@ export interface SheLeadsInterface extends Interface {
   encodeFunctionData(
     functionFragment: "getRecommendation",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getRecommendations",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "handleOracleFulfillment",
@@ -178,6 +198,10 @@ export interface SheLeadsInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getRecommendation",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getRecommendations",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -428,6 +452,12 @@ export interface SheLeads extends BaseContract {
     "view"
   >;
 
+  getRecommendations: TypedContractMethod<
+    [],
+    [SheLeads.RecommendationStructOutput[]],
+    "view"
+  >;
+
   handleOracleFulfillment: TypedContractMethod<
     [requestId: BytesLike, response: BytesLike, err: BytesLike],
     [void],
@@ -511,6 +541,9 @@ export interface SheLeads extends BaseContract {
     [SheLeads.RecommendationStructOutput],
     "view"
   >;
+  getFunction(
+    nameOrSignature: "getRecommendations"
+  ): TypedContractMethod<[], [SheLeads.RecommendationStructOutput[]], "view">;
   getFunction(
     nameOrSignature: "handleOracleFulfillment"
   ): TypedContractMethod<

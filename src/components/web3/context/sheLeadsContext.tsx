@@ -41,6 +41,7 @@ type SheLeadsContextType = {
     contentRecommendation: string,
     contentActionPlan: string
   ) => Promise<void>
+  getRecommendations: () => Promise<SheLeads.RecommendationStruct[] | undefined>
 }
 
 export const SheLeadsContext = createContext<SheLeadsContextType | null>(null)
@@ -120,8 +121,16 @@ const SheLeadsProvider = ({ children }: SheLeadsProviderProps) => {
 
     return await contract.getMyActionPlan()
   }
+  
+  const getRecommendations = async (): Promise<
+    SheLeads.RecommendationStruct[] | undefined
+  > => {
+    if (!contract) return
 
-  const sendRequest = async() => {
+    return await contract.getRecommendations()
+  }
+
+  const sendRequest = async () => {
     if (!contract) return
 
     return await contract.sendRequest()
@@ -140,6 +149,7 @@ const SheLeadsProvider = ({ children }: SheLeadsProviderProps) => {
         responsesCGPT,
         setResponsesCGPT,
         addRecommendationActionPlan,
+        getRecommendations,
       }}
     >
       {children}

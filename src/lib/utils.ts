@@ -4,6 +4,8 @@ import { twMerge } from "tailwind-merge"
 
 import { algorithm } from "./constants"
 import { EncryptDataProps } from "@/components/abis/types/generalTypes"
+import { BigNumberish } from "ethers"
+import { format } from "date-fns"
 
 const key = process.env.ENCRIPTION_KEY || ""
 
@@ -76,7 +78,7 @@ export const fetchAI = async (prompt: string) => {
     body: JSON.stringify({ prompt }),
   })
   let { text } = await response.json()
-console.log('text :>> ', text);
+  console.log("text :>> ", text)
   text = text.replaceAll("```json", "")
   text = text.replaceAll("```", "")
 
@@ -88,3 +90,6 @@ export const getAIResponse = async (prompt: string) => {
 
   return text
 }
+
+export const getFormatDate = (date: BigNumberish) =>
+  format(new Date(parseInt(date.toString() + "000")), "PPpp")

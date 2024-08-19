@@ -16,12 +16,13 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { ReloadIcon } from "@radix-ui/react-icons"
-import { upload } from "@/lib/utils"
+import { upload, viewIPFSContent } from "@/lib/utils"
 import {
   professionalProfileSoftwareEngineer,
   professionalProfileWaleska,
 } from "@/components/data/professionalProfile"
 import { Textarea } from "@/components/ui/textarea"
+import { SheLeads } from "@/components/abis/types/SheLeads"
 
 const formSchema = z.object({
   workExperience: z.array(
@@ -101,6 +102,24 @@ const Profile = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [dummyData, setDummyData] = useState<z.infer<typeof formSchema>>()
 
+  const {
+    getProfessionalProfile: getPP,
+    addRecommendationActionPlan,
+    contract,
+  } = useSheLeadsContext()
+  const [professionalProfileId, setProfessionalProfileId] = useState<string>("")
+  const [professionalProfile, setProfessionalProfile] = useState<
+    SheLeads.ProfessionalProfileStruct | undefined
+  >()
+
+  const getProfessionalProfile =
+    async (): Promise<SheLeads.ProfessionalProfileStruct | null> => {
+      const pp = await getPP()
+      if (pp?.id == undefined || pp?.content === "") return null
+      setProfessionalProfileId(pp?.id.toString())
+      return await viewIPFSContent(pp?.content)
+    }
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     /* @ts-ignore */
@@ -117,19 +136,40 @@ const Profile = () => {
   }
 
   useEffect(() => {
-    /* @ts-ignore */
-    setDummyData({
-      workExperience: [
-        {
-          jobTitle: "",
-          companyName: "",
-          duration: "",
-          mainResponsabilities: "",
-          specificSkills: "",
-        },
-      ],
-    })
-  }, [])
+    const asyncFunc = async () => {
+      if (!(contract && professionalProfileId === "")) return
+
+      const professionalProfile = await getProfessionalProfile()
+      if (professionalProfile === null) return
+      setProfessionalProfile(professionalProfile)
+    }
+
+    asyncFunc()
+  }, [contract, professionalProfileId])
+
+  useEffect(() => {
+    if (
+      professionalProfile != undefined &&
+      /* @ts-ignore */
+      professionalProfile.educationCertification != undefined
+    ) {
+      /* @ts-ignore */
+      setDummyData(professionalProfile)
+    } else {
+      /* @ts-ignore */
+      setDummyData({
+        workExperience: [
+          {
+            jobTitle: "",
+            companyName: "",
+            duration: "",
+            mainResponsabilities: "",
+            specificSkills: "",
+          },
+        ],
+      })
+    }
+  }, [professionalProfile])
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true)
