@@ -107,16 +107,19 @@ describe("SheLeads", function () {
       await sheLeads.addProfessionalProfile(content)
       pp = await sheLeads.getProfessionalProfile()
       console.log('pp.id :>> ', pp.id);
+      console.log('pp.createdAt :>> ', pp.createdAt);
       content = "4563453"
       
       await sheLeads.addProfessionalProfile(content)
       pp = await sheLeads.getProfessionalProfile()
       console.log('pp.id :>> ', pp.id);
+      console.log('pp.createdAt :>> ', pp.createdAt);
       content = "456<sdv<ds3453"
       
       await sheLeads.addProfessionalProfile(content)
       pp = await sheLeads.getProfessionalProfile()
       console.log('pp.id :>> ', pp.id);
+      console.log('pp.createdAt :>> ', pp.createdAt);
       pp = await sheLeads.getProfessionalProfile()
       
       content = "2112rv45"
@@ -128,6 +131,7 @@ describe("SheLeads", function () {
 
       pp = await sheLeads.getProfessionalProfile()
       console.log('pp.id :>> ', pp.id);
+      console.log('pp.createdAt :>> ', pp.createdAt);
       
       content = "23rve55rv45"
 

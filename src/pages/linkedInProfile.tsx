@@ -16,11 +16,16 @@ const LinkedInProfile = () => {
     getProfessionalProfile: getPP,
     getRecommendation,
     contract,
+    isConnected,
   } = useSheLeadsContext()
   const router = useRouter()
   const [professionalProfileId, setProfessionalProfileId] = useState<string>("")
   const [promptLinkedIn, setPromptLinkedIn] = useState<string>("")
   const [lip, setLinkedInInfo] = useState()
+
+  useEffect(() => {
+    if (!isConnected) router.push("/")
+  }, [isConnected])
 
   const getProfessionalProfile = async (): Promise<{
     id: string

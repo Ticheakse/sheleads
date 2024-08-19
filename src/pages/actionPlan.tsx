@@ -1,24 +1,25 @@
 import { useEffect, useState } from "react"
 
 import { useSheLeadsContext } from "@/components/web3/context/sheLeadsContext"
-import { getAIResponse, viewIPFSContent } from "@/lib/utils"
+import { viewIPFSContent } from "@/lib/utils"
 import { ActionPlanType } from "@/components/abis/types/generalTypes"
-import { getPromptForLinkedIn } from "@/lib/prompts"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useRouter } from "next/navigation"
+import { LoadingSpinner } from "@/components/ui/loading-spinner"
 
 const ActionPlan = () => {
-  const { getMyActionPlan, contract } = useSheLeadsContext()
+  const { getMyActionPlan, contract, isConnected } = useSheLeadsContext()
   const router = useRouter()
   const [actionPlan, setActionPlan] = useState<ActionPlanType>()
-  const [professionalProfileId, setProfessionalProfileId] = useState<string>("")
-
-  const [promptLinkedIn, setPromptLinkedIn] = useState<string>("")
 
   useEffect(() => {
-    const asyncFunc = async () => {
-      if (!contract && professionalProfileId === "") return
+    if (!isConnected) router.push("/")
+  }, [isConnected])
+
+  useEffect(() => {
+    const getActionPlan = async () => {
+      if (!contract) return
 
       const ap = await getMyActionPlan()
 
@@ -26,24 +27,10 @@ const ActionPlan = () => {
       const realActionPlan = await viewIPFSContent(ap.content)
 
       setActionPlan(realActionPlan)
-
-      // const pp = await getProfessionalProfile()
-
-      // if (pp && professionalProfileId) {
-      //   const rec = await getRec(parseInt(professionalProfileId))
-      //   const pln = getPromptForLinkedIn(pp, rec, realActionPlan)
-
-      //   setPromptLinkedIn(pln)
-      // }
     }
 
-    asyncFunc()
-  }, [contract, professionalProfileId])
-
-  const getLinkedInRecommendation = async () => {
-    let res = await getAIResponse(promptLinkedIn)
-    console.log("res :>> ", res)
-  }
+    getActionPlan()
+  }, [contract])
 
   return (
     <div className="flex flex-1 flex-col p-4 md:p-8 max-w-4xl mx-auto bg-background m-8 shadow-lg rounded-lg gap-y-5">
@@ -117,12 +104,9 @@ const ActionPlan = () => {
               View Dashboard
             </Button>
           </div>
-          {/* <Button onClick={getLinkedInRecommendation}>
-            Recommendation for LinkedIn
-          </Button> */}
         </>
       ) : (
-        <h2>Action Plan not ready yet</h2>
+        <LoadingSpinner />
       )}
     </div>
   )

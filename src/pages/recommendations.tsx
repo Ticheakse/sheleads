@@ -26,6 +26,7 @@ import {
   getPromptRegenerateRecommendation,
 } from "@/lib/prompts"
 import { RecommendationsType } from "@/components/abis/types/generalTypes"
+import { LoadingSpinner } from "@/components/ui/loading-spinner"
 
 const formSchema = z.object({
   recommendations: z.array(
@@ -47,6 +48,7 @@ const Recommendations = () => {
     getProfessionalProfile: getPP,
     addRecommendationActionPlan,
     contract,
+    isConnected,
   } = useSheLeadsContext()
   const [isLoading, setIsLoading] = useState(false)
   const [isRegenerating, setIsRegenerating] = useState(false)
@@ -64,6 +66,10 @@ const Recommendations = () => {
       setProfessionalProfileId(pp?.id.toString())
       return await viewIPFSContent(pp?.content)
     }
+
+  useEffect(() => {
+    if (!isConnected) router.push("/")
+  }, [isConnected])
 
   useEffect(() => {
     const asyncFunc = async () => {
@@ -146,7 +152,7 @@ const Recommendations = () => {
         Tailored AI Recommendations
       </h1>
       {recommendations?.recommendations == undefined ? (
-        <h1>loading</h1>
+        <LoadingSpinner />
       ) : (
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -220,7 +226,14 @@ const Recommendations = () => {
                       )}
                     />
                   </div>
-                  <div className="flex justify-end items-center">
+                  <div
+                    className={cn(
+                      "flex justify-end items-center",
+                      isRegenerating && index === indexRegen
+                        ? "justify-center"
+                        : ""
+                    )}
+                  >
                     <Button
                       variant="outline"
                       size="sm"
@@ -231,7 +244,11 @@ const Recommendations = () => {
                         regenerate(index)
                       }}
                     >
-                      Regenerate
+                      {isRegenerating && index === indexRegen ? (
+                        <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                      ) : (
+                        <span>Regenerate</span>
+                      )}
                     </Button>
                   </div>
                 </div>

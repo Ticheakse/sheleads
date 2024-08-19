@@ -98,19 +98,23 @@ const formSchema = z.object({
 
 const Profile = () => {
   const router = useRouter()
-  const { addProfessionalProfile } = useSheLeadsContext()
+  const {
+    addProfessionalProfile,
+    getProfessionalProfile: getPP,
+    contract,
+    isConnected,
+  } = useSheLeadsContext()
   const [isLoading, setIsLoading] = useState(false)
   const [dummyData, setDummyData] = useState<z.infer<typeof formSchema>>()
 
-  const {
-    getProfessionalProfile: getPP,
-    addRecommendationActionPlan,
-    contract,
-  } = useSheLeadsContext()
   const [professionalProfileId, setProfessionalProfileId] = useState<string>("")
   const [professionalProfile, setProfessionalProfile] = useState<
     SheLeads.ProfessionalProfileStruct | undefined
   >()
+
+  useEffect(() => {
+    if (!isConnected) router.push("/")
+  }, [isConnected])
 
   const getProfessionalProfile =
     async (): Promise<SheLeads.ProfessionalProfileStruct | null> => {
@@ -486,7 +490,16 @@ const Profile = () => {
               />
             </div>
           </div>
-          <div className="flex justify-end w-full pt-2">
+          <div className="flex justify-end w-full pt-2 gap-4">
+            <Button
+              variant="outline"
+              onClick={(e) => {
+                e.preventDefault()
+                router.push("/")
+              }}
+            >
+              Cancel
+            </Button>
             <Button type="submit" disabled={isLoading}>
               {isLoading && (
                 <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />

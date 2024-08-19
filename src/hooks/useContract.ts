@@ -1,5 +1,6 @@
 import { getSignedContract } from "@/lib/web3"
 import { ethers, Interface, InterfaceAbi } from "ethers"
+import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import { useAccount } from "wagmi"
 

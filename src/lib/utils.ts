@@ -69,7 +69,7 @@ export const viewIPFSContent = async (cid: string) => {
   return res.resource
 }
 
-export const fetchAI = async (prompt: string) => {
+export const onlyFetchAi = async (prompt: string): Promise<any> => {
   const response = await fetch("/api/cgpt", {
     method: "post",
     headers: {
@@ -77,8 +77,21 @@ export const fetchAI = async (prompt: string) => {
     },
     body: JSON.stringify({ prompt }),
   })
-  let { text } = await response.json()
-  console.log("text :>> ", text)
+  const res = await response.json()
+  return res
+}
+
+export const fetchAI = async (prompt: string) => {
+  // const response = await fetch("/api/cgpt", {
+  //   method: "post",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //   },
+  //   body: JSON.stringify({ prompt }),
+  // })
+  // let { text } = await response.json()
+  let { text } = await onlyFetchAi(prompt)
+
   text = text.replaceAll("```json", "")
   text = text.replaceAll("```", "")
 

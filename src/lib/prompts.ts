@@ -49,3 +49,6 @@ export const getPromptForLinkedIn = (
  Work Experience (with responsibilities and achievements), Skills & Endorsements, Education, Professional Summary, 
  Volunteer Experience (if applicable), Recommendations, Personal Interests & Causes, Contact Information, and Media Attachments (optional).
  The response is in JSON format like this { linkedinProfileUpdate: { professionalBio: "", headlineShortDescription: "", workExperience: [{ jobTitle: "", companyName: "", duration: "", mainResponsibilities: "",  achievements: "", specificSkills: [""]}], skillsAndEndorsements: [""]}}`
+
+export const getDailyQuotePrompt = () =>
+  `Provide an inspiring quote for women who are actively shaping their careers and future. The quote should be between 100 and 150 characters, focusing on empowerment, resilience, and personal growth.`

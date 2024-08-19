@@ -1,4 +1,6 @@
 import Link from "next/link"
+import Image from "next/image"
+
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -6,7 +8,7 @@ import {
   BreadcrumbList,
 } from "@/components/ui/breadcrumb"
 import ConnectButton from "../web3/connectButton"
-import { Package2 } from "lucide-react"
+import logo from "../../../public/favicon.png"
 
 const HeaderSection = () => {
   return (
@@ -19,7 +21,8 @@ const HeaderSection = () => {
                 href="/"
                 className="flex items-center gap-4 text-lg font-semibold md:text-base"
               >
-                <Package2 className="h-6 w-6" />
+                <Image src={logo} alt="SheLeads" width="40" />
+
                 <span>SheLeads</span>
               </Link>
             </BreadcrumbLink>

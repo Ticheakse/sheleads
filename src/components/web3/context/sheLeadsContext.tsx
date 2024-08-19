@@ -21,6 +21,7 @@ type SheLeadsProviderProps = {
 
 type SheLeadsContextType = {
   contract: ethers.Contract | null
+  isConnected: boolean
   addProfessionalProfile: (contentId: string) => Promise<void>
   getProfessionalProfile: () => Promise<
     SheLeads.ProfessionalProfileStruct | undefined
@@ -51,7 +52,7 @@ const SheLeadsProvider = ({ children }: SheLeadsProviderProps) => {
   const chainId = useChainId()
   const [responsesCGPT, setResponsesCGPT] = useState<JSON[]>([])
 
-  const { contract } = useContract({
+  const { contract, isConnected } = useContract({
     contractAddress: CONTRACT_ADDRESSES[chainId],
     ABI: SheLeadsAbi.abi,
   })
@@ -121,7 +122,7 @@ const SheLeadsProvider = ({ children }: SheLeadsProviderProps) => {
 
     return await contract.getMyActionPlan()
   }
-  
+
   const getRecommendations = async (): Promise<
     SheLeads.RecommendationStruct[] | undefined
   > => {
@@ -140,6 +141,7 @@ const SheLeadsProvider = ({ children }: SheLeadsProviderProps) => {
     <SheLeadsContext.Provider
       value={{
         contract,
+        isConnected,
         addProfessionalProfile,
         getProfessionalProfile,
         addRecommendation,
