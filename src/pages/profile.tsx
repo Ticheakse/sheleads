@@ -510,7 +510,7 @@ const Profile = () => {
             </Button>
           </div>
         </form>
-        <div>
+        {/* <div>
           <span>dummy data</span>
           <div className="flex w-full justify-start gap-2">
             <Button
@@ -526,7 +526,7 @@ const Profile = () => {
               Waleska
             </Button>
           </div>
-        </div>
+        </div> */}
       </Form>
     </div>
   )
