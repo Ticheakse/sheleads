@@ -49,10 +49,12 @@ const Recommendations = () => {
     addRecommendationActionPlan,
     contract,
     isConnected,
+    sendRequest,
   } = useSheLeadsContext()
   const [isLoading, setIsLoading] = useState(false)
   const [isRegenerating, setIsRegenerating] = useState(false)
   const [indexRegen, setIndexRegen] = useState(0)
+  const [isValidate, setIsValidate] = useState(false)
   const [professionalProfileId, setProfessionalProfileId] = useState<string>("")
   const [recommendations, setRecommendations] = useState<RecommendationsType>()
   const [professionalProfile, setProfessionalProfile] = useState<
@@ -66,6 +68,15 @@ const Recommendations = () => {
       setProfessionalProfileId(pp?.id.toString())
       return await viewIPFSContent(pp?.content)
     }
+
+  const validateWithChainlinkFunctions = async () => {
+    const pp = getPromptForValidation(
+      JSON.stringify(recommendations),
+      JSON.stringify(professionalProfile)
+    )
+
+    await sendRequest(pp)
+  }
 
   useEffect(() => {
     if (!isConnected) router.push("/")
@@ -90,6 +101,25 @@ const Recommendations = () => {
 
     asyncFunc()
   }, [contract, professionalProfileId])
+
+  useEffect(() => {
+    const asyncFunc = async () => {
+      if (isValidate) return
+
+      if (
+        recommendations != undefined &&
+        recommendations?.recommendations != undefined &&
+        professionalProfile != undefined &&
+        /* @ts-ignore */
+        professionalProfile.workExperience != undefined
+      ) {
+        await validateWithChainlinkFunctions()
+        setIsValidate(true)
+      }
+    }
+
+    asyncFunc()
+  }, [recommendations, professionalProfile, isValidate])
 
   const regenerate = async (index: number) => {
     setIsRegenerating(true)

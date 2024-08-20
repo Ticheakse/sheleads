@@ -13,5 +13,5 @@ npx hardhat verify --network shibarium 0xf772d56d3d996d742bB8eff88Ad9761361a23Cd
 
 ```shell
 npx hardhat ignition deploy ./ignition/modules/SheLeads.ts --network baseSepolia
-npx hardhat verify --network baseSepolia 0xc206b976d23A7ec6Cb9F9Dc61e3b8576317e831f
+npx hardhat verify --network baseSepolia 0x7485ba960Cf0FEbf9fA0C699300d37c5c3B72799
 ```

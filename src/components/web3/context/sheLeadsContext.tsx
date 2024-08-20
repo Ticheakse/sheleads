@@ -144,11 +144,9 @@ const SheLeadsProvider = ({ children }: SheLeadsProviderProps) => {
   const sendRequest = async (prompt: string) => {
     if (!contract) return
 
-    const test = await contract.sendRequest(156, process.env.OPENAI_ENC, [
+    await contract.sendRequest(156, process.env.NEXT_PUBLIC_OPENAI_ENC, [
       prompt,
     ])
-
-    console.log("test :>> ", test)
   }
 
   return (
