@@ -8,7 +8,7 @@ import {
   BreadcrumbList,
 } from "@/components/ui/breadcrumb"
 import ConnectButton from "../web3/connectButton"
-import logo from "../../../public/favicon.png"
+import logo from "../../../public/logo-gray.png"
 
 const HeaderSection = () => {
   return (
