@@ -40,6 +40,7 @@ import { getFormatDate } from "@/lib/utils"
 import logo from "../../public/logo-no-bg.png"
 import Image from "next/image"
 import DailyQuote from "@/components/web/dailyQuote"
+import WidgetLinkedIn from "@/components/web/widgetLinkedIn"
 
 export default function Home() {
   const { getRecommendations, contract } = useSheLeadsContext()
@@ -71,7 +72,7 @@ export default function Home() {
   else
     return (
       <div className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
-        <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-5">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-base font-semibold tracking-wide">
@@ -117,19 +118,7 @@ export default function Home() {
             </CardContent>
           </Card>
           <DailyQuote />
-          {/* <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-base font-semibold tracking-wide">
-                My Last Inspiration
-              </CardTitle>
-              <HeartHandshake className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                Frase motivacional creada por la AI
-              </p>
-            </CardContent>
-          </Card> */}
+          <WidgetLinkedIn />
         </div>
         <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
           <Card className="xl:col-span-2" x-chunk="dashboard-01-chunk-4">

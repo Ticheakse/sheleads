@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useRouter } from "next/navigation"
 import { SheLeads } from "@/components/abis/types/SheLeads"
+import { LoadingSpinner } from "@/components/ui/loading-spinner"
 
 const LinkedInProfile = () => {
   const {
@@ -149,12 +150,15 @@ const LinkedInProfile = () => {
                 router.push("/")
               }}
             >
-              Back to Home
+              Back to Dashboard
             </Button>
           </div>
         </>
       ) : (
-        <h2>Searching the best LinkedIn Profile for you</h2>
+        <div className="text-center flex gap-4 flex-col">
+          <h2>Searching the best LinkedIn Profile for you</h2>
+          <LoadingSpinner />
+        </div>
       )}
     </div>
   )
