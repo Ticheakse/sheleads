@@ -6,7 +6,7 @@
 
 ```shell
 npx hardhat ignition deploy ./ignition/modules/SheLeads.ts --network shibarium
-npx hardhat verify --network shibarium 0xf772d56d3d996d742bB8eff88Ad9761361a23Cde
+npx hardhat verify --network shibarium 0x9fF04b2d1be38783D0CAb05205C3caD3D0D71208
 ```
 
 ### Base Sepolia
