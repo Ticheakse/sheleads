@@ -177,7 +177,7 @@ export default function Home() {
                       <TableRow key={idx}>
                         <TableCell>
                           <div className="font-medium">
-                            {getFormatDate(r.createdAt)}
+                            My career path for {getFormatDate(r.createdAt)}
                           </div>
                         </TableCell>
                         <TableCell className="text-right">

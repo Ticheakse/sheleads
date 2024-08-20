@@ -105,4 +105,4 @@ export const getAIResponse = async (prompt: string) => {
 }
 
 export const getFormatDate = (date: BigNumberish) =>
-  format(new Date(parseInt(date.toString() + "000")), "PPpp")
+  format(new Date(parseInt(date.toString() + "000")), "PPP")
