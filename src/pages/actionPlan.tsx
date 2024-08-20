@@ -5,12 +5,16 @@ import { viewIPFSContent } from "@/lib/utils"
 import { ActionPlanType } from "@/components/abis/types/generalTypes"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
 
 const ActionPlan = () => {
-  const { getMyActionPlan, contract, isConnected } = useSheLeadsContext()
+  const { getMyActionPlan, getActionPlan, contract, isConnected } =
+    useSheLeadsContext()
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const actionPlanId = searchParams.get("actionPlanId")
+
   const [actionPlan, setActionPlan] = useState<ActionPlanType>()
 
   useEffect(() => {
@@ -18,10 +22,13 @@ const ActionPlan = () => {
   }, [isConnected])
 
   useEffect(() => {
-    const getActionPlan = async () => {
+    const getActionPlanAsync = async () => {
       if (!contract) return
 
-      const ap = await getMyActionPlan()
+      const ap =
+        actionPlanId === null
+          ? await getMyActionPlan()
+          : await getActionPlan(parseInt(actionPlanId))
 
       if (!ap || ap.content === undefined || ap.content === "") return
       const realActionPlan = await viewIPFSContent(ap.content)
@@ -29,7 +36,7 @@ const ActionPlan = () => {
       setActionPlan(realActionPlan)
     }
 
-    getActionPlan()
+    getActionPlanAsync()
   }, [contract])
 
   return (

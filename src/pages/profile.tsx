@@ -188,6 +188,8 @@ const Profile = () => {
     router.push("/recommendations")
   }
 
+  const Optional = () => <span className="text-gray-500/80 text-xs ml-1">(Optional)</span>
+
   return (
     <div className="flex flex-1 flex-col p-4 md:p-8 max-w-4xl mx-auto bg-background m-8 shadow-lg rounded-lg gap-y-5">
       <div className="text-center">
@@ -199,13 +201,13 @@ const Profile = () => {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           {/** workExperience */}
-          <div className="grid border border-gray-500/40 p-4 rounded-md">
+          <div className="grid border border-gray-500/40 p-4 rounded-md gap-2">
             <h2 className="flex justify-center text-lg font-semibold">
               Section 1: Work Experiences
             </h2>
             {fields.map((field, index) => (
               <div key={field.id}>
-                <h3 className="text-base border-b-2 pb-1">
+                <h3 className="text-base font-semibold border-b-2 pb-1">
                   Work Experience {index + 1}
                 </h3>
                 <div className="grid grid-cols-5 gap-4 py-3">
@@ -215,9 +217,9 @@ const Profile = () => {
                       name={`workExperience.${index}.jobTitle`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>jobTitle</FormLabel>
+                          <FormLabel>Job Title</FormLabel>
                           <FormControl>
-                            <Input placeholder="jobTitle" {...field} />
+                            <Input placeholder="Add a Job Title" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -230,9 +232,9 @@ const Profile = () => {
                       name={`workExperience.${index}.companyName`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>companyName</FormLabel>
+                          <FormLabel>Company Name <Optional /></FormLabel>
                           <FormControl>
-                            <Input placeholder="companyName" {...field} />
+                            <Input placeholder="Add a Company Name" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -244,9 +246,9 @@ const Profile = () => {
                     name={`workExperience.${index}.duration`}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>duration</FormLabel>
+                        <FormLabel>Duration</FormLabel>
                         <FormControl>
-                          <Input placeholder="duration" {...field} />
+                          <Input placeholder="Add duration" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -258,10 +260,10 @@ const Profile = () => {
                       name={`workExperience.${index}.mainResponsabilities`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>mainResponsabilities</FormLabel>
+                          <FormLabel>Main Responsabilities</FormLabel>
                           <FormControl>
                             <Textarea
-                              placeholder="mainResponsabilities"
+                              placeholder="Add Main Responsabilities"
                               {...field}
                             />
                           </FormControl>
@@ -276,9 +278,9 @@ const Profile = () => {
                       name={`workExperience.${index}.specificSkills`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>specificSkills</FormLabel>
+                          <FormLabel>Specific Skills</FormLabel>
                           <FormControl>
-                            <Textarea placeholder="specificSkills" {...field} />
+                            <Textarea placeholder="Add your Specific Skills" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -307,11 +309,11 @@ const Profile = () => {
                   e.preventDefault()
 
                   append({
-                    jobTitle: "asd2",
-                    companyName: "as2",
-                    duration: "20 months",
-                    mainResponsabilities: "asd2",
-                    specificSkills: "asd2",
+                    jobTitle: "",
+                    companyName: "",
+                    duration: "",
+                    mainResponsabilities: "",
+                    specificSkills: "",
                   })
                 }}
               >
@@ -330,10 +332,10 @@ const Profile = () => {
                 name="educationCertification.highestLevelOfEducation"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>highestLevelOfEducation</FormLabel>
+                    <FormLabel>Highest Level of Education</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="highestLevelOfEducation"
+                        placeholder="Add Highest level of education"
                         {...field}
                       />
                     </FormControl>
@@ -346,9 +348,9 @@ const Profile = () => {
                 name="educationCertification.fieldOfStudy"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>fieldOfStudy</FormLabel>
+                    <FormLabel>Field of Study</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="fieldOfStudy" {...field} />
+                      <Textarea placeholder="Add field of study" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -359,9 +361,9 @@ const Profile = () => {
                 name="educationCertification.certifications"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>certifications</FormLabel>
+                    <FormLabel>Certifications</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="certifications" {...field} />
+                      <Textarea placeholder="Add certifications" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -381,9 +383,9 @@ const Profile = () => {
                 name="personalCompetences.strengths"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>strengths</FormLabel>
+                    <FormLabel>Strengths</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="strengths" {...field} />
+                      <Textarea placeholder="Add strengths" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -394,9 +396,9 @@ const Profile = () => {
                 name="personalCompetences.weaknesses"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>weaknesses</FormLabel>
+                    <FormLabel>Weaknesses</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="weaknesses" {...field} />
+                      <Textarea placeholder="Add weaknesses" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -415,9 +417,9 @@ const Profile = () => {
                 name="goalsAndInspirations.WhatWouldYouLikeToDo"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>WhatWouldYouLikeToDo</FormLabel>
+                    <FormLabel>What would you like to do?</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="WhatWouldYouLikeToDo" {...field} />
+                      <Textarea placeholder="Add what would you like to do" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -428,9 +430,9 @@ const Profile = () => {
                 name="goalsAndInspirations.shortTermGoals"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>shortTermGoals</FormLabel>
+                    <FormLabel>Short Term Goals <Optional /></FormLabel>
                     <FormControl>
-                      <Textarea placeholder="shortTermGoals" {...field} />
+                      <Textarea placeholder="Add short term goals" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -441,9 +443,9 @@ const Profile = () => {
                 name="goalsAndInspirations.longTermGoals"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>longTermGoals</FormLabel>
+                    <FormLabel>Long Term Goals <Optional /></FormLabel>
                     <FormControl>
-                      <Textarea placeholder="longTermGoals" {...field} />
+                      <Textarea placeholder="Add long term goals" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -462,10 +464,10 @@ const Profile = () => {
                 name="personalInterests.areasOfPersonalInterest"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>areasOfPersonalInterest</FormLabel>
+                    <FormLabel>Areas of Personal Interest</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="areasOfPersonalInterest"
+                        placeholder="Add areas of personal interest"
                         {...field}
                       />
                     </FormControl>
@@ -478,9 +480,9 @@ const Profile = () => {
                 name="personalInterests.timeAvailability"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>timeAvailability</FormLabel>
+                    <FormLabel>Time Availability <Optional /></FormLabel>
                     <FormControl>
-                      <Textarea placeholder="timeAvailability" {...field}>
+                      <Textarea placeholder="Add time availability" {...field}>
                         {field.value}
                       </Textarea>
                     </FormControl>

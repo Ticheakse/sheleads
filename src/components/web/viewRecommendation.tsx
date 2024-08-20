@@ -2,12 +2,15 @@ import { useEffect, useState } from "react"
 
 import { cn, viewIPFSContent } from "@/lib/utils"
 import { SheLeads } from "@/components/abis/types/SheLeads"
+import { Button } from "../ui/button"
+import { useRouter } from "next/router"
 
 type ViewRecommendationProps = {
   recommendation: SheLeads.RecommendationStruct
 }
 
 const ViewRecommendation = ({ recommendation }: ViewRecommendationProps) => {
+  const router = useRouter()
   const [recomm, setRecomm] =
     useState<{ title: string; description: string }[]>()
 
@@ -40,6 +43,19 @@ const ViewRecommendation = ({ recommendation }: ViewRecommendationProps) => {
           </div>
         </div>
       ))}
+
+      <div className="flex justify-end w-full pt-2">
+        <Button
+          onClick={(e) => {
+            e.preventDefault()
+            router.push(
+              `/actionPlan?actionPlanId=${recommendation.id.toString()}`
+            )
+          }}
+        >
+          View Action Plan
+        </Button>
+      </div>
     </div>
   )
 }

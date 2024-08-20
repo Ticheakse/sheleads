@@ -43,6 +43,8 @@ type SheLeadsContextType = {
     contentActionPlan: string
   ) => Promise<void>
   getRecommendations: () => Promise<SheLeads.RecommendationStruct[] | undefined>
+  sendRequest: (prompt: string) => Promise<void>
+  getActionPlan: (id: number) => Promise<SheLeads.ActionPlanStruct | undefined>
 }
 
 export const SheLeadsContext = createContext<SheLeadsContextType | null>(null)
@@ -123,6 +125,14 @@ const SheLeadsProvider = ({ children }: SheLeadsProviderProps) => {
     return await contract.getMyActionPlan()
   }
 
+  const getActionPlan = async (
+    id: number
+  ): Promise<SheLeads.ActionPlanStruct | undefined> => {
+    if (!contract) return
+
+    return await contract.getActionPlan(id)
+  }
+
   const getRecommendations = async (): Promise<
     SheLeads.RecommendationStruct[] | undefined
   > => {
@@ -131,10 +141,14 @@ const SheLeadsProvider = ({ children }: SheLeadsProviderProps) => {
     return await contract.getRecommendations()
   }
 
-  const sendRequest = async () => {
+  const sendRequest = async (prompt: string) => {
     if (!contract) return
 
-    return await contract.sendRequest()
+    const test = await contract.sendRequest(156, process.env.OPENAI_ENC, [
+      prompt,
+    ])
+
+    console.log("test :>> ", test)
   }
 
   return (
@@ -152,6 +166,8 @@ const SheLeadsProvider = ({ children }: SheLeadsProviderProps) => {
         setResponsesCGPT,
         addRecommendationActionPlan,
         getRecommendations,
+        sendRequest,
+        getActionPlan,
       }}
     >
       {children}
