@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useFieldArray, useForm } from "react-hook-form"
 import { z } from "zod"
 import { ReloadIcon } from "@radix-ui/react-icons"
+import { useChainId } from "wagmi"
 
 import { useSheLeadsContext } from "@/components/web3/context/sheLeadsContext"
 import { Button } from "@/components/ui/button"
@@ -43,6 +44,7 @@ const formSchema = z.object({
 })
 
 const Recommendations = () => {
+  const chainId = useChainId()
   const router = useRouter()
   const {
     getProfessionalProfile: getPP,
@@ -105,6 +107,7 @@ const Recommendations = () => {
   useEffect(() => {
     const asyncFunc = async () => {
       if (isValidate) return
+      if (chainId !== 84532) return
 
       if (
         recommendations != undefined &&
