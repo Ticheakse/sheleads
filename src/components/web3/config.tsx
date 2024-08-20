@@ -14,10 +14,10 @@ const metadata = {
   icons: ["https://avatars.githubusercontent.com/u/37784886"],
 }
 
-const chains = [shibarium, baseSepolia, hardhat] as const
+const chains = [shibarium, baseSepolia] as const
 
 export const config = defaultWagmiConfig({
-  chains,
+  chains: process.env.NODE_ENV === "production" ? chains : [...chains, hardhat],
   projectId,
   metadata,
   ssr: false,
