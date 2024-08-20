@@ -60,6 +60,9 @@ contract SheLeads is FunctionsClient, ConfirmedOwner {
   /// @dev mapping recomendationId to action plan id
   mapping(uint256 => uint256) actionPlan;
 
+  /// @dev mapping action plan id to ActionPlan
+  mapping(uint256 => ActionPlan) actionPlanById;
+
   /// @dev mapping address to ActionPlan
   mapping(address => ActionPlan) userActionPlan;
 
@@ -96,7 +99,7 @@ contract SheLeads is FunctionsClient, ConfirmedOwner {
     "'Content-Type': 'application/json'"
     "},"
     "data: {"
-    "'model': 'gpt-4o', 'messages': [{"
+    "'model': 'gpt-4o-mini', 'messages': [{"
     "'role': 'user', 'content': prompt"
     "}]"
     "}"
@@ -104,7 +107,7 @@ contract SheLeads is FunctionsClient, ConfirmedOwner {
     "const [openAiResponse] = await Promise.all(["
     "openAIRequest"
     "])"
-    "const result = openAiResponse.data.choices[0].message.content"
+    "let result = openAiResponse.data.choices[0].message.content"
     "result = result.replaceAll('```json', '')"
     "result = result.replaceAll('```', '')"
     "return Functions.encodeString(JSON.parse(result).finalResult)";
@@ -218,6 +221,12 @@ contract SheLeads is FunctionsClient, ConfirmedOwner {
       createdAt: block.timestamp
     });
 
+    actionPlanById[id] = ActionPlan({
+      id: id,
+      content: _content,
+      createdAt: block.timestamp
+    });
+
     actionPlanId.increment();
 
     emit AddActionPlan(msg.sender);
@@ -225,8 +234,10 @@ contract SheLeads is FunctionsClient, ConfirmedOwner {
 
   function getActionPlan(
     uint256 _recommendationId
-  ) public view returns (uint256) {
-    return actionPlan[_recommendationId];
+  ) public view returns (ActionPlan memory) {
+    uint256 apId = actionPlan[_recommendationId];
+
+    return actionPlanById[apId];
   }
 
   function getMyActionPlan() public view returns (ActionPlan memory) {
@@ -250,6 +261,12 @@ contract SheLeads is FunctionsClient, ConfirmedOwner {
 
     actionPlan[id] = idAP;
     userActionPlan[msg.sender] = ActionPlan({
+      id: idAP,
+      content: _contentActionPlan,
+      createdAt: block.timestamp
+    });
+
+    actionPlanById[idAP] = ActionPlan({
       id: idAP,
       content: _contentActionPlan,
       createdAt: block.timestamp

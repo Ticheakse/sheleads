@@ -430,7 +430,7 @@ export interface SheLeads extends BaseContract {
 
   getActionPlan: TypedContractMethod<
     [_recommendationId: BigNumberish],
-    [bigint],
+    [SheLeads.ActionPlanStructOutput],
     "view"
   >;
 
@@ -523,7 +523,11 @@ export interface SheLeads extends BaseContract {
   >;
   getFunction(
     nameOrSignature: "getActionPlan"
-  ): TypedContractMethod<[_recommendationId: BigNumberish], [bigint], "view">;
+  ): TypedContractMethod<
+    [_recommendationId: BigNumberish],
+    [SheLeads.ActionPlanStructOutput],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "getMyActionPlan"
   ): TypedContractMethod<[], [SheLeads.ActionPlanStructOutput], "view">;
